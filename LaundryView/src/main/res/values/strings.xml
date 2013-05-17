@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name" >LaundryView
+    </string>
+    <string name="title_room_detail" >Room Detail
+    </string>
+    <string name="attribution">Data provided by LaundryView</string>
+    <string name="washers">Washers</string>
+    <string name="dryers">Dryers</string>
+
+</resources>
