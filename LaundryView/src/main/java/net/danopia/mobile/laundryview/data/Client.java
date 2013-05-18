@@ -1,21 +1,18 @@
 package net.danopia.mobile.laundryview.data;
 
+import android.os.Build;
 import net.danopia.mobile.laundryview.Util;
 import net.danopia.mobile.laundryview.structs.Location;
 import net.danopia.mobile.laundryview.structs.Machine;
 import net.danopia.mobile.laundryview.structs.Provider;
 import net.danopia.mobile.laundryview.structs.Room;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,42 +24,40 @@ import java.util.regex.Pattern;
  * Created by danopia on 5/17/13.
  */
 public class Client {
-    private static final String BASE_URL = "http://mobile.danopia.net/laundryview/data/";
+    private static final String BASE_URL = "http://www.laundryview.com/";
+    // private static final String BASE_URL = "http://mobile.danopia.net/laundryview/data/";
+
+    static {
+        // Work around pre-Froyo bugs in HTTP connection reuse.
+        if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
+            System.setProperty("http.keepAlive", "false");
+        }
+    }
+
     private static String getPage(String path) {
         BufferedReader in = null;
         StringBuilder sb = new StringBuilder();
+        HttpURLConnection urlConnection = null;
 
         try {
-            HttpClient client = new DefaultHttpClient();
-            URI website = new URI(BASE_URL + path);
-            HttpGet request = new HttpGet();
-            request.setURI(website);
-            HttpResponse response = client.execute(request);
-            response.getStatusLine().getStatusCode();
+            URL url = new URL(BASE_URL + path);
+            urlConnection = (HttpURLConnection) url.openConnection();
 
-            in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String l;
-            while ((l = in.readLine()) !=null){
-                sb.append(l); // TODO: newline?
+            while ((l = in.readLine()) != null) {
+                sb.append(l);
             }
             in.close();
-        } catch (ClientProtocolException e) {
+        } catch (MalformedURLException e) {
             sb.append(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
             sb.append(e.getMessage());
             e.printStackTrace();
-        } catch (URISyntaxException e) {
-            sb.append(e.getMessage());
-            e.printStackTrace();
-        } finally{
-            if (in != null){
-                try {
-                    in.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        } finally {
+            if (urlConnection != null)
+                urlConnection.disconnect();
         }
 
         return sb.toString();
@@ -70,12 +65,17 @@ public class Client {
 
     protected static Map<String, String> getDataFile(String path) {
         String raw = getPage(path);
+
+        // UGLY HACK. THANKS MACGREY.
+        raw = raw.replaceAll("&deg;", "°").replaceAll("&amp;", "&");
+
         String[] parts = raw.substring(1).split("&");
 
         Map<String, String> data = new HashMap<String, String>();
         for (String part : parts) {
             String[] keyval = part.split("=", 2);
-            data.put(keyval[0], keyval[1]);
+            if (keyval.length == 2)
+                data.put(keyval[0], keyval[1]);
         }
 
         return data;
