@@ -17,7 +17,7 @@ import net.danopia.mobile.laundryview.structs.Room;
  * in two-pane mode (on tablets) or a {@link RoomDetailActivity}
  * on handsets.
  */
-class RoomDetailFragment extends Fragment {
+public class RoomDetailFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
