@@ -49,6 +49,9 @@
         android:choiceMode="multipleChoice"
         android:fastScrollAlwaysVisible="false"
         android:numColumns="2"
-        android:drawSelectorOnTop="false" />
+        android:drawSelectorOnTop="false"
+        android:fastScrollEnabled="false"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"/>
 
 </LinearLayout>

@@ -6,8 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.GridView;
 import net.danopia.mobile.laundryview.data.Client;
+import net.danopia.mobile.laundryview.data.MachineArrayAdapter;
 import net.danopia.mobile.laundryview.structs.Room;
 
 /**
@@ -81,7 +82,8 @@ public class RoomDetailFragment extends Fragment {
     public class UserLoginTask extends AsyncTask<Room, Void, Room> {
         @Override
         protected Room doInBackground(Room... params) {
-            Client.getMachines(params[0]);
+            Client.getRoom(params[0]);
+            Client.updateRoom(params[0]);
             return params[0];
         }
 
@@ -96,11 +98,7 @@ public class RoomDetailFragment extends Fragment {
             ///((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(
             ///        getActivity(),data));
 
-            /*((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new ArrayAdapter<DummyContent.DummyItem>(
-                    getActivity(),
-                    R.layout.machine_list_item,
-                    R.id.machine_item_number,
-                    DummyContent.DUMMY.items));*/
+            ((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(getActivity(), data.machines));
 
             /*if (success) {
                 finish();

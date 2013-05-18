@@ -1,10 +1,12 @@
 package net.danopia.mobile.laundryview.data;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import net.danopia.mobile.laundryview.R;
 import net.danopia.mobile.laundryview.structs.Machine;
@@ -48,12 +50,62 @@ public class MachineArrayAdapter extends ArrayAdapter<Machine> {
         Machine machine = getItem(position);
         //machine.refresh();
 
-        //buddyName = (TextView) row.findViewById(R.id.buddy_name);   //change this to textField1  from simple_list_item_2
-        //buddyName.setText(buddy.toString());
+        TextView numb = (TextView) row.findViewById(R.id.machine_number);
+        TextView status = (TextView) row.findViewById(R.id.machine_status);
+        TextView message = (TextView) row.findViewById(R.id.machine_message);
 
-        //buddyStatus = (TextView) row.findViewById(R.id.buddy_mood); //change this to textField2 from simple_list_item_2
-        //buddyStatus.setText(buddy.getMood());
-        //      Log.d(tag, buddy.getIdentity()+"'s mood is "+buddyStatus.getText());
+        numb.setText(machine.number);
+
+        TextView bgL = (TextView) row.findViewById(R.id.bg_dark);
+        TextView bgR = (TextView) row.findViewById(R.id.bg_light);
+
+        bgL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 0));
+        bgR.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
+
+        switch (machine.status) {
+            case 0:
+                if (machine.message.startsWith("extended cycle")) {
+                    status.setText("extended cycle");
+                    message.setText(machine.message.substring(14));
+                } else {
+                    status.setText(machine.timeLeft + " minutes left");
+                    message.setText("");
+                }
+
+                bgL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, machine.cycleLength - machine.timeLeft));
+                bgR.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, machine.timeLeft));
+
+                bgL.setBackgroundColor(Color.parseColor("#ff0000"));
+                bgR.setBackgroundColor(Color.parseColor("#ff8080"));
+                break;
+
+            case 1:
+                if (machine.message.startsWith("cycle ended")) {
+                    status.setText("cycle ended");
+                    message.setText(machine.message.substring(11));
+                } else {
+                    status.setText("");
+                    message.setText("");
+                }
+
+                bgR.setBackgroundColor(Color.parseColor("#80ff80"));
+                break;
+
+            case 2:
+                status.setText("cycle has ended");
+                message.setText("door still closed");
+
+                bgR.setBackgroundColor(Color.parseColor("#ffff80"));
+                break;
+
+            default:
+                status.setText(machine.message);
+                message.setText("");
+                bgR.setBackgroundColor(Color.parseColor("#808080"));
+        }
+
+        status.setVisibility (( status.getText() == "") ? TextView.GONE : TextView.VISIBLE);
+        message.setVisibility((message.getText() == "") ? TextView.GONE : TextView.VISIBLE);
 
         return row;
     }

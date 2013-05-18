@@ -8,5 +8,6 @@
     <string name="attribution">Data provided by LaundryView</string>
     <string name="washers">Washers</string>
     <string name="dryers">Dryers</string>
+    <string name="out_of_service">out of service</string>
 
 </resources>

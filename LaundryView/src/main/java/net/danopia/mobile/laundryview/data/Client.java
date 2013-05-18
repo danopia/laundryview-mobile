@@ -120,11 +120,66 @@ public class Client {
         }
     }
 
-    public static void getMachines(Room room) {
-        room.machines = new ArrayList<Machine>();
+    public static void getRoom(Room room) {
+        List<Machine> machines = new ArrayList<Machine>();
+
         Map<String, String> data = getDataFile("staticRoomData.php?location=" + room.id);
         for (int i = 1; data.containsKey("machineData" + i); i++) {
-            System.out.println(i + ": " + data.get("machineData" + i));
+            String[] values = data.get("machineData" + i).split(":");
+            data.remove("machineData" + i);
+
+            double x = Double.parseDouble(values[0]);
+            double y = Double.parseDouble(values[1]);
+            String heading = values[2];
+            String type = values[3];
+
+            if (type.equals("washFL")) {
+                machines.add(new Machine(room, Integer.parseInt(values[5]), values[4], x, y,  0, heading, "washer"));
+            } else if (type.equals("dry")) {
+                machines.add(new Machine(room, Integer.parseInt(values[5]), values[4], x, y,  0, heading, "dryer"));
+            } else if (type.equals("dblDry")) {
+                machines.add(new Machine(room, Integer.parseInt(values[5]), values[4], x, y, 50, heading, "dryer"));
+                machines.add(new Machine(room, Integer.parseInt(values[9]), values[8], x, y,  0, heading, "dryer"));
+            } else if (type.equals("washNdry")) {
+                machines.add(new Machine(room, Integer.parseInt(values[5]), values[4], x, y, 50, heading, "dryer"));
+                machines.add(new Machine(room, Integer.parseInt(values[9]), values[8], x, y,  0, heading, "washer"));
+            } else if (type.equals("tableSm") // towers
+                    || type.equals("sink") // e.g. van r
+                    || type.equals("cardReader")) { // public demo
+                // do nothing
+            } else {
+                System.out.println("Unknown machine type found: " + type); // TODO: report
+            }
+        }
+
+        room.enhance(data, machines);
+    }
+
+    public static void updateRoom(Room room) {
+        Map<String, String> data = getDataFile("dynamicRoomData.php?location=" + room.id);
+        for (int i = 1; data.containsKey("machineStatus" + i); i++) {
+            String[] values = data.get("machineStatus" + i).split(":");
+            data.remove("machineStatus" + i);
+
+            switch (values.length) {
+                case 18:
+                    int status = Integer.parseInt(values[9]);
+                    int timeLeft = Integer.parseInt(values[10]);
+                    int id = Integer.parseInt(values[12]);
+                    int cycleLength = Integer.parseInt(values[13]);
+                    String message = (values[15] == "0") ? null : values[15];
+
+                    room.getMachine(id).enhance(status, timeLeft, cycleLength, message);
+
+                case 9:
+                    status = Integer.parseInt(values[0]);
+                    timeLeft = Integer.parseInt(values[1]);
+                    id = Integer.parseInt(values[3]);
+                    cycleLength = Integer.parseInt(values[4]);
+                    message = (values[6] == "0") ? null : values[6];
+
+                    room.getMachine(id).enhance(status, timeLeft, cycleLength, message);
+            }
         }
     }
 }

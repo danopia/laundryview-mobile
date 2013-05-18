@@ -114,6 +114,10 @@ public class RoomListFragment extends ListFragment {
         }
 
         mCallbacks = (Callbacks) activity;
+
+        //this.getListView().addOnLayoutChangeListener(e -> {System.out.println("hi"); });
+        //button.addActionListener(e -> { ui.dazzle(e.getModifiers()); });
+
     }
 
     @Override
