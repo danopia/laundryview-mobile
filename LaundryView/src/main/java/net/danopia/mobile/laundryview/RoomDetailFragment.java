@@ -3,9 +3,7 @@ package net.danopia.mobile.laundryview;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.GridView;
 import net.danopia.mobile.laundryview.data.Client;
 import net.danopia.mobile.laundryview.data.MachineArrayAdapter;
@@ -43,6 +41,7 @@ public class RoomDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
@@ -73,6 +72,25 @@ public class RoomDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.room_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh_option:
+                if (mAuthTask == null && mAuthTask2 == null) {
+                    mAuthTask2 = new UserLoginTask2();
+                    mAuthTask2.execute(mRoom);
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
