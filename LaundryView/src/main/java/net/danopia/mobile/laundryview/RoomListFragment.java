@@ -178,6 +178,7 @@ public class RoomListFragment extends ListFragment {
             mAuthTask = null;
             Cache.provider = data;
 
+            // TODO: make sure we still exist
             getActivity().setTitle(Cache.provider.name);
             setListAdapter(new LocationArrayAdapter(getActivity(), Cache.provider.locations));
         }
