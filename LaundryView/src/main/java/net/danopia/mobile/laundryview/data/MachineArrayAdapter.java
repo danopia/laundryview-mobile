@@ -63,12 +63,14 @@ public class MachineArrayAdapter extends ArrayAdapter<Machine> {
 
         switch (machine.status) {
             case 0:
-                if (machine.message.startsWith("extended cycle")) {
+                machineMessage.setText("");
+                if (machine.message == null) {
+                    machineStatus.setText(machine.timeLeft + " minutes left");
+                } else if (machine.message.startsWith("extended cycle")) {
                     machineStatus.setText("extended cycle");
                     machineMessage.setText(machine.message.substring(14));
                 } else {
-                    machineStatus.setText(machine.timeLeft + " minutes left");
-                    machineMessage.setText("");
+                    machineStatus.setText(machine.message);
                 }
 
                 bgL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, machine.cycleLength - machine.timeLeft));
@@ -79,12 +81,14 @@ public class MachineArrayAdapter extends ArrayAdapter<Machine> {
                 break;
 
             case 1:
-                if (machine.message.startsWith("cycle ended")) {
+                machineMessage.setText("");
+                if (machine.message == null) {
+                    machineStatus.setText(machine.message);
+                } else if (machine.message.startsWith("cycle ended")) {
                     machineStatus.setText("cycle ended");
                     machineMessage.setText(machine.message.substring(11));
                 } else {
                     machineStatus.setText("");
-                    machineMessage.setText("");
                 }
 
                 bgR.setBackgroundColor(Color.parseColor("#80ff80"));
