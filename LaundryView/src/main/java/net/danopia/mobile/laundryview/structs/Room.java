@@ -38,9 +38,9 @@ public class Room {
     }
 
     public Machine getMachine(int id) {
-        for (int i = 0; i < this.machines.size(); i++) {
-            if (this.machines.get(i).id == id)
-                return this.machines.get(i);
+        for (Machine machine : this.machines) {
+            if (machine.id == id)
+                return machine;
         }
 
         return null;

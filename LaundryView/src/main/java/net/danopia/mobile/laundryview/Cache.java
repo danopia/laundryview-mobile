@@ -5,6 +5,6 @@ import net.danopia.mobile.laundryview.structs.Provider;
 /**
  * Created by danopia on 5/17/13.
  */
-public class Cache {
+class Cache {
     public static Provider provider = null;
 }

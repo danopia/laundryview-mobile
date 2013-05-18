@@ -6,7 +6,9 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -40,7 +42,5 @@
             </intent-filter>
         </activity-->
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

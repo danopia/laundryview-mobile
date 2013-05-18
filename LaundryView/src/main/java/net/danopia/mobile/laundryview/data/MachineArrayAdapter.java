@@ -11,25 +11,24 @@ import android.widget.TextView;
 import net.danopia.mobile.laundryview.R;
 import net.danopia.mobile.laundryview.structs.Machine;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by danopia on 5/16/13.
  */
 public class MachineArrayAdapter extends ArrayAdapter<Machine> {
-    private static final String tag = "MachineArrayAdapter";
-    private Context context;
+    //private static final String tag = "MachineArrayAdapter";
+    //private final Context context;
 
     private TextView machineNum;
-    private TextView machineState;
     private TextView machineStatus;
-    private List<Machine> machines = new ArrayList<Machine>();
+    private TextView machineMessage;
+    private final List<Machine> machines;
 
     public MachineArrayAdapter(Context context, List<Machine> machines)
     {
         super(context, 0, machines);
-        this.context = context;
+        //this.context = context;
         this.machines = machines;
         //Collections.sort(buddies);
     }
@@ -50,11 +49,11 @@ public class MachineArrayAdapter extends ArrayAdapter<Machine> {
         Machine machine = getItem(position);
         //machine.refresh();
 
-        TextView numb = (TextView) row.findViewById(R.id.machine_number);
-        TextView status = (TextView) row.findViewById(R.id.machine_status);
-        TextView message = (TextView) row.findViewById(R.id.machine_message);
+        machineNum = (TextView) row.findViewById(R.id.machine_number);
+        machineStatus = (TextView) row.findViewById(R.id.machine_status);
+        machineMessage = (TextView) row.findViewById(R.id.machine_message);
 
-        numb.setText(machine.number);
+        machineNum.setText(machine.number);
 
         TextView bgL = (TextView) row.findViewById(R.id.bg_dark);
         TextView bgR = (TextView) row.findViewById(R.id.bg_light);
@@ -65,11 +64,11 @@ public class MachineArrayAdapter extends ArrayAdapter<Machine> {
         switch (machine.status) {
             case 0:
                 if (machine.message.startsWith("extended cycle")) {
-                    status.setText("extended cycle");
-                    message.setText(machine.message.substring(14));
+                    machineStatus.setText("extended cycle");
+                    machineMessage.setText(machine.message.substring(14));
                 } else {
-                    status.setText(machine.timeLeft + " minutes left");
-                    message.setText("");
+                    machineStatus.setText(machine.timeLeft + " minutes left");
+                    machineMessage.setText("");
                 }
 
                 bgL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, machine.cycleLength - machine.timeLeft));
@@ -81,31 +80,31 @@ public class MachineArrayAdapter extends ArrayAdapter<Machine> {
 
             case 1:
                 if (machine.message.startsWith("cycle ended")) {
-                    status.setText("cycle ended");
-                    message.setText(machine.message.substring(11));
+                    machineStatus.setText("cycle ended");
+                    machineMessage.setText(machine.message.substring(11));
                 } else {
-                    status.setText("");
-                    message.setText("");
+                    machineStatus.setText("");
+                    machineMessage.setText("");
                 }
 
                 bgR.setBackgroundColor(Color.parseColor("#80ff80"));
                 break;
 
             case 2:
-                status.setText("cycle has ended");
-                message.setText("door still closed");
+                machineStatus.setText("cycle has ended");
+                machineMessage.setText("door still closed");
 
                 bgR.setBackgroundColor(Color.parseColor("#ffff80"));
                 break;
 
             default:
-                status.setText(machine.message);
-                message.setText("");
+                machineStatus.setText(machine.message);
+                machineMessage.setText("");
                 bgR.setBackgroundColor(Color.parseColor("#808080"));
         }
 
-        status.setVisibility (( status.getText() == "") ? TextView.GONE : TextView.VISIBLE);
-        message.setVisibility((message.getText() == "") ? TextView.GONE : TextView.VISIBLE);
+        machineStatus.setVisibility (( machineStatus.getText() == "") ? TextView.GONE : TextView.VISIBLE);
+        machineMessage.setVisibility((machineMessage.getText() == "") ? TextView.GONE : TextView.VISIBLE);
 
         return row;
     }

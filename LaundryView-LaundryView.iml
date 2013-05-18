@@ -65,10 +65,20 @@
       <excludeFolder url="file://$MODULE_DIR$/LaundryView/build/manifests" />
       <excludeFolder url="file://$MODULE_DIR$/LaundryView/build/symbols" />
       <excludeFolder url="file://$MODULE_DIR$/LaundryView/build/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/LaundryView/src/main/java/net/danopia/mobile/laundryview/d3" />
     </content>
     <orderEntry type="jdk" jdkName="Android 4.2.2" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="android-support-v4" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/annotations.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

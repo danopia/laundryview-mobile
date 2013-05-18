@@ -17,9 +17,8 @@ public class Provider {
     }
 
     public Room getRoom(int id) {
-        for (int i = 0; i < this.locations.size(); i++) {
-            for (int j = 0; j < this.locations.get(i).rooms.size(); j++) {
-                Room room = this.locations.get(i).rooms.get(j);
+        for (Location location : this.locations) {
+            for (Room room : location.rooms) {
                 if (room.id == id)
                     return room;
             }
@@ -29,11 +28,10 @@ public class Provider {
     }
 
     public Location getRoomLocation(int id) {
-        for (int i = 0; i < this.locations.size(); i++) {
-            for (int j = 0; j < this.locations.get(i).rooms.size(); j++) {
-                Room room = this.locations.get(i).rooms.get(j);
+        for (Location location : this.locations) {
+            for (Room room : location.rooms) {
                 if (room.id == id)
-                    return this.locations.get(i);
+                    return location;
             }
         }
 

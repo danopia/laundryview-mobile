@@ -28,9 +28,9 @@ import java.util.regex.Pattern;
  */
 public class Client {
     private static final String BASE_URL = "http://mobile.danopia.net/laundryview/data/";
-    protected static String getPage(String path) {
+    private static String getPage(String path) {
         BufferedReader in = null;
-        StringBuffer sb = new StringBuffer("");
+        StringBuilder sb = new StringBuilder();
 
         try {
             HttpClient client = new DefaultHttpClient();
@@ -41,7 +41,7 @@ public class Client {
             response.getStatusLine().getStatusCode();
 
             in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-            String l = "";
+            String l;
             while ((l = in.readLine()) !=null){
                 sb.append(l); // TODO: newline?
             }
@@ -73,8 +73,8 @@ public class Client {
         String[] parts = raw.substring(1).split("&");
 
         Map<String, String> data = new HashMap<String, String>();
-        for (int i = 0; i < parts.length; i++) {
-            String[] keyval = parts[i].split("=", 2);
+        for (String part : parts) {
+            String[] keyval = part.split("=", 2);
             data.put(keyval[0], keyval[1]);
         }
 
@@ -143,7 +143,8 @@ public class Client {
             } else if (type.equals("washNdry")) {
                 machines.add(new Machine(room, Integer.parseInt(values[5]), values[4], x, y, 50, heading, "dryer"));
                 machines.add(new Machine(room, Integer.parseInt(values[9]), values[8], x, y,  0, heading, "washer"));
-            } else if (type.equals("tableSm") // towers
+            } else //noinspection StatementWithEmptyBody,StatementWithEmptyBody
+                if (type.equals("tableSm") // towers
                     || type.equals("sink") // e.g. van r
                     || type.equals("cardReader")) { // public demo
                 // do nothing
@@ -167,7 +168,7 @@ public class Client {
                     int timeLeft = Integer.parseInt(values[10]);
                     int id = Integer.parseInt(values[12]);
                     int cycleLength = Integer.parseInt(values[13]);
-                    String message = (values[15] == "0") ? null : values[15];
+                    String message = (values[15].equals("0")) ? null : values[15];
 
                     room.getMachine(id).enhance(status, timeLeft, cycleLength, message);
 
@@ -176,7 +177,7 @@ public class Client {
                     timeLeft = Integer.parseInt(values[1]);
                     id = Integer.parseInt(values[3]);
                     cycleLength = Integer.parseInt(values[4]);
-                    message = (values[6] == "0") ? null : values[6];
+                    message = (values[6].equals("0")) ? null : values[6];
 
                     room.getMachine(id).enhance(status, timeLeft, cycleLength, message);
             }

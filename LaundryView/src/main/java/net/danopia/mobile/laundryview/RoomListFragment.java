@@ -59,7 +59,7 @@ public class RoomListFragment extends ListFragment {
      * A dummy implementation of the {@link Callbacks} interface that does
      * nothing. Used only when this fragment is not attached to an activity.
      */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
+    private static final Callbacks sDummyCallbacks = new Callbacks() {
         @Override
         public void onItemSelected(String id) {
         }
@@ -151,12 +151,10 @@ public class RoomListFragment extends ListFragment {
      * Turns on activate-on-click mode. When this mode is on, list items will be
      * given the 'activated' state when touched.
      */
-    public void setActivateOnItemClick(boolean activateOnItemClick) {
+    public void setActivateOnItemClick() {
         // When setting CHOICE_MODE_SINGLE, ListView will automatically
         // give items the 'activated' state when touched.
-        getListView().setChoiceMode(activateOnItemClick
-                ? ListView.CHOICE_MODE_SINGLE
-                : ListView.CHOICE_MODE_NONE);
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     private void setActivatedPosition(int position) {
@@ -169,7 +167,7 @@ public class RoomListFragment extends ListFragment {
         mActivatedPosition = position;
     }
 
-    public class UserLoginTask extends AsyncTask<Void, Void, Provider> {
+    private class UserLoginTask extends AsyncTask<Void, Void, Provider> {
         @Override
         protected Provider doInBackground(Void... params) {
             return Client.getLocations();

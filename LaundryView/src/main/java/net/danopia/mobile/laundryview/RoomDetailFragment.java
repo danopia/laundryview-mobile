@@ -17,7 +17,7 @@ import net.danopia.mobile.laundryview.structs.Room;
  * in two-pane mode (on tablets) or a {@link RoomDetailActivity}
  * on handsets.
  */
-public class RoomDetailFragment extends Fragment {
+class RoomDetailFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -57,7 +57,7 @@ public class RoomDetailFragment extends Fragment {
             }
         }
     }
-    View rootView=null;
+    private View rootView=null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -79,7 +79,7 @@ public class RoomDetailFragment extends Fragment {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Room, Void, Room> {
+    private class UserLoginTask extends AsyncTask<Room, Void, Room> {
         @Override
         protected Room doInBackground(Room... params) {
             Client.getRoom(params[0]);

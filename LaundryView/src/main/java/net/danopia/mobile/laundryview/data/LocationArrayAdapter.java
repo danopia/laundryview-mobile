@@ -17,27 +17,27 @@ import java.util.List;
  * Created by danopia on 5/16/13.
  */
 public class LocationArrayAdapter extends ArrayAdapter<LocationArrayAdapter.Union> {
-    private static final String tag = "LocationArrayAdapter";
-    private Context context;
+    //private static final String tag = "LocationArrayAdapter";
+    //private final Context context;
 
     public LocationArrayAdapter(Context context, List<Location> data)
     {
         super(context, 0, new ArrayList<Union>());
 
-        for (int i = 0; i < data.size(); i++) {
-            this.add(new Union(data.get(i)));
-            for (int j = 0; j < data.get(i).rooms.size(); j++) {
-                this.add(new Union(data.get(i).rooms.get(j)));
+        for (Location location : data) {
+            this.add(new Union(location));
+            for (Room room : location.rooms) {
+                this.add(new Union(room));
             }
         }
 
-        this.context = context;
+        //this.context = context;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        View row = convertView;
+        View row;// = convertView;
 
         //if (row == null)
         //{

@@ -3,7 +3,6 @@ package net.danopia.mobile.laundryview;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.widget.FrameLayout;
 
 
 /**
@@ -47,7 +46,7 @@ public class RoomListActivity extends FragmentActivity
             // 'activated' state when touched.
             ((RoomListFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.room_list))
-                    .setActivateOnItemClick(true);
+                    .setActivateOnItemClick();
         }
 
         // TODO: If exposing deep links into your app, handle intents here.
