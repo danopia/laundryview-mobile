@@ -31,6 +31,7 @@ class RoomDetailFragment extends Fragment {
 
 
     private UserLoginTask mAuthTask = null;
+    private UserLoginTask2 mAuthTask2 = null;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,7 +84,6 @@ class RoomDetailFragment extends Fragment {
         @Override
         protected Room doInBackground(Room... params) {
             Client.getRoom(params[0]);
-            Client.updateRoom(params[0]);
             return params[0];
         }
 
@@ -101,6 +101,9 @@ class RoomDetailFragment extends Fragment {
             // TODO: make sure we still exist
             ((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(getActivity(), data.machines));
 
+            mAuthTask2 = new UserLoginTask2();
+            mAuthTask2.execute(mRoom);
+
             /*if (success) {
                 finish();
             } else {
@@ -112,6 +115,42 @@ class RoomDetailFragment extends Fragment {
         @Override
         protected void onCancelled() {
             mAuthTask = null;
+            //showProgress(false);
+        }
+    }
+
+    private class UserLoginTask2 extends AsyncTask<Room, Void, Room> {
+        @Override
+        protected Room doInBackground(Room... params) {
+            Client.updateRoom(params[0]);
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(final Room data) {
+            mAuthTask2 = null;
+            //showProgress(false);
+            //mItem = data;
+            //if (rootView!=null && mItem !=null)
+            //((TextView) rootView.findViewById(R.id.room_detail)).setText(mItem.content);
+
+            ///((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(
+            ///        getActivity(),data));
+
+            // TODO: make sure we still exist
+            ((GridView) rootView.findViewById(R.id.machine_grid)).invalidateViews();//.setAdapter(new MachineArrayAdapter(getActivity(), data.machines));
+
+            /*if (success) {
+                finish();
+            } else {
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+            }*/
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask2 = null;
             //showProgress(false);
         }
     }
