@@ -9,21 +9,21 @@ import java.util.Map;
  * Created by danopia on 5/17/13.
  */
 public class Room {
-    public final int id;
+    public final long id;
     public final String name;
     public final int w;
     public final int d;
     public List<Machine> machines = null;
     public Map<String, String> meta = null;
 
-    public Room(int id, String name, int w, int d) {
+    public Room(long id, String name, int w, int d) {
         this.id = id;
         this.name = name;
         this.w = w;
         this.d = d;
     }
 
-    public Room(int id, Map<String, String> meta, List<Machine> machines) {
+    public Room(long id, Map<String, String> meta, List<Machine> machines) {
         this.id = id;
         this.name = Util.titleCase(meta.get("name"));
         this.w = -1;

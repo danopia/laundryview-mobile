@@ -16,7 +16,7 @@ public class Provider {
         this.locations = locations;
     }
 
-    public Room getRoom(int id) {
+    public Room getRoom(long id) {
         for (Location location : this.locations) {
             for (Room room : location.rooms) {
                 if (room.id == id)
@@ -27,7 +27,7 @@ public class Provider {
         return null;
     }
 
-    public Location getRoomLocation(int id) {
+    public Location getRoomLocation(long id) {
         for (Location location : this.locations) {
             for (Room room : location.rooms) {
                 if (room.id == id)

@@ -50,7 +50,7 @@ public class RoomDetailFragment extends Fragment {
             //mItem = DummyContent.DUMMY.itemMap.get();
 
             if (Cache.provider != null) {
-                mRoom = Cache.provider.getRoom(Integer.parseInt(getArguments().getString(ARG_ITEM_ID)));
+                mRoom = Cache.provider.getRoom(Long.parseLong(getArguments().getString(ARG_ITEM_ID)));
 
                 mAuthTask = new UserLoginTask();
                 mAuthTask.execute(mRoom);

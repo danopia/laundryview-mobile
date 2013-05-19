@@ -135,7 +135,7 @@ public class RoomListFragment extends ListFragment {
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
         if (Cache.provider != null)
-            mCallbacks.onItemSelected(Integer.toString(((LocationArrayAdapter.Union) listView.getAdapter().getItem(position)).room.id));
+            mCallbacks.onItemSelected(Long.toString(((LocationArrayAdapter.Union) listView.getAdapter().getItem(position)).room.id));
     }
 
     @Override

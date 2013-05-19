@@ -10,9 +10,7 @@ import net.danopia.mobile.laundryview.structs.Room;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +30,10 @@ public class Client {
         if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
             System.setProperty("http.keepAlive", "false");
         }
+
+        CookieManager cookieManager = new CookieManager();
+        CookieHandler.setDefault(cookieManager);
+        getPage("viewcrm"); // 2591	CRM - Bradford, Bristol, Cambridge, Edinburgh, Lincoln, London, Manchester, Nottingham, Oxford, Penryn (/viewcrm) [CIRCUIT]
     }
 
     private static String getPage(String path) {
@@ -81,8 +83,8 @@ public class Client {
         return data;
     }
 
-    private static final Pattern p1 = Pattern.compile("<div [^>]+>\\s+(.+?)\\s+</div>");
-    private static final Pattern p2 = Pattern.compile("<a href=\"laundry_room\\.php\\?lr=(\\d+)\"[^>]+>\\s+(.+?)\\s+<[^<]+<span[^>]+>\\((\\d+) W / (\\d+) D\\)</");
+    private static final Pattern p1 = Pattern.compile("<(?:div|h4) [^>]+>\\s+(.+?)\\s+</(?:div|h4)>");
+    private static final Pattern p2 = Pattern.compile("<a href=\"laundry_room\\.php\\?lr=(\\d+)\"[^>]+>\\s+(.+?)\\s+<[^<]+<span[^>]+>\\((\\d+) W(?:ASHERS)? / (\\d+) D(?:RYERS)?\\)</");
     private static final Pattern p3 = Pattern.compile("flashvars = \\{gallons: \"([\\d,]+)\", room: \"gallons of water saved at [ ]?([^\"]+)\"\\}");
 
     public static Provider getLocations() {
@@ -106,7 +108,7 @@ public class Client {
                 m.find();
 
                 String rName = Util.titleCase(m.group(2).replace(name + " - ", "").replace(name + " ", ""));
-                rooms.add(new Room(Integer.parseInt(m.group(1)), rName, Integer.parseInt(m.group(3)), Integer.parseInt(m.group(4))));
+                rooms.add(new Room(Long.parseLong(m.group(1)), rName, Integer.parseInt(m.group(3)), Integer.parseInt(m.group(4))));
             }
             locations.add(new Location(Util.titleCase(name), rooms));
         }
