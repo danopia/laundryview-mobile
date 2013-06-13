@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * Handles HTTP stuff
  * Created by danopia on 5/17/13.
  */
 public class Client {
@@ -41,11 +42,11 @@ public class Client {
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
 
-        // getPage("stonybrook"); // Hardcode a location for development reasons
+        // getPage("pitt"); // Hardcode a location for development reasons
     }
 
     private static String getPage(String path) {
-        BufferedReader in = null;
+        BufferedReader in;
         StringBuilder sb = new StringBuilder();
         HttpURLConnection urlConnection = null;
 
@@ -164,7 +165,7 @@ public class Client {
             String heading = values[2];
             String type = values[3];
 
-            if (type.equals("washFL")) {
+            if (type.equals("washFL") || type.equals("washTL")) {
                 machines.add(new Machine(room, Integer.parseInt(values[5]), values[4], x, y,  0, heading, "washer"));
             } else if (type.equals("dry")) {
                 machines.add(new Machine(room, Integer.parseInt(values[5]), values[4], x, y,  0, heading, "dryer"));
