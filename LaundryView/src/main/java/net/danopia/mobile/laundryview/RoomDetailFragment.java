@@ -219,10 +219,15 @@ public class RoomDetailFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.refresh_option: // TODO: if no machines, try that first :)
+            case R.id.refresh_option:
                 if (mAuthTask == null && mAuthTask2 == null) {
-                    mAuthTask2 = new UserLoginTask2();
-                    mAuthTask2.execute(mRoom);
+                    if (mRoom.machines == null) {
+                        mAuthTask = new UserLoginTask();
+                        mAuthTask.execute(mRoom);
+                    } else {
+                        mAuthTask2 = new UserLoginTask2();
+                        mAuthTask2.execute(mRoom);
+                    }
                 }
                 return true;
         }
