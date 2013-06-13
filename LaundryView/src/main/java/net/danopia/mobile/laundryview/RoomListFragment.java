@@ -2,11 +2,13 @@ package net.danopia.mobile.laundryview;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
+
 import net.danopia.mobile.laundryview.data.Client;
 import net.danopia.mobile.laundryview.data.LocationArrayAdapter;
 import net.danopia.mobile.laundryview.structs.Provider;
@@ -179,14 +181,33 @@ public class RoomListFragment extends ListFragment {
         @Override
         protected void onPostExecute(final Provider data) {
             mAuthTask = null;
+
+            if (data == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setTitle("Network Unavailable");
+                builder.setMessage("Can't load room list.\n\nCheck that you have network, and try again.");
+                builder.setNeutralButton("Close", null); // TODO: i18n
+
+                mAD = builder.create();
+                mAD.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    public void onDismiss(DialogInterface dialog) {
+                        getActivity().finish();
+                    }
+                });
+                mAD.show();
+                return;
+            }
             Cache.provider = data;
 
             if (Cache.provider.isDemo && mAD == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                builder.setTitle("Campus Unavailable");
                 builder.setMessage("LaundryView is only giving demo information.\n\nIf you expected more, try connecting to campus wifi and refreshing.");
-                builder.setPositiveButton("Okay", null); // TODO: i18n
-                mAD = builder.create();
-                mAD.show();
+                builder.setNeutralButton("Continue", null); // TODO: i18n
+
+                (mAD = builder.create()).show();
             }
 
             // TODO: make sure we still exist

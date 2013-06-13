@@ -1,6 +1,7 @@
 package net.danopia.mobile.laundryview.data;
 
 import android.os.Build;
+
 import net.danopia.mobile.laundryview.Util;
 import net.danopia.mobile.laundryview.structs.Location;
 import net.danopia.mobile.laundryview.structs.Machine;
@@ -10,7 +11,11 @@ import net.danopia.mobile.laundryview.structs.Room;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,10 +59,8 @@ public class Client {
             }
             in.close();
         } catch (MalformedURLException e) {
-            sb.append(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            sb.append(e.getMessage());
             e.printStackTrace();
         } finally {
             if (urlConnection != null)
@@ -94,6 +97,8 @@ public class Client {
         Matcher m;
 
         String raw = getPage("lvs.php");
+        if (raw.isEmpty()) return null; // probably no network
+
         String chunk = raw.substring(raw.indexOf("<div class=\"home-schoolinfo\">"));
         chunk = chunk.substring(0, chunk.indexOf("class=\"bg-blue4\""));
 
