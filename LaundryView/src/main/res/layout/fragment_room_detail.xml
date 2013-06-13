@@ -4,14 +4,14 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:baselineAligned="false">
+    <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
 
         <FrameLayout
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1">
@@ -26,7 +26,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:layout_weight="1">
 
@@ -38,20 +38,22 @@
                 android:id="@+id/textView2"
                 android:layout_gravity="center"/>
         </FrameLayout>
-    </LinearLayout>
+    </TableRow>
 
-    <GridView
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:id="@+id/machine_grid"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:choiceMode="multipleChoice"
-        android:fastScrollAlwaysVisible="false"
-        android:numColumns="2"
-        android:drawSelectorOnTop="false"
-        android:fastScrollEnabled="false"
-        android:verticalSpacing="5dp"
-        android:horizontalSpacing="5dp"/>
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView"
+            android:fillViewport="true"
+            android:padding="2dp">
+
+        <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/machine_grid"
+                android:stretchColumns="0,1">
+
+        </TableLayout>
+    </ScrollView>
 
 </LinearLayout>

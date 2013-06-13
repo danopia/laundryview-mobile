@@ -1,5 +1,7 @@
 package net.danopia.mobile.laundryview;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,11 +11,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import net.danopia.mobile.laundryview.data.Client;
-import net.danopia.mobile.laundryview.data.MachineArrayAdapter;
+import net.danopia.mobile.laundryview.data.MachineComparator;
+import net.danopia.mobile.laundryview.structs.Machine;
 import net.danopia.mobile.laundryview.structs.Room;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * A fragment representing a single Room detail screen.
@@ -50,11 +59,6 @@ public class RoomDetailFragment extends Fragment {
         setHasOptionsMenu(true);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            //mItem = DummyContent.DUMMY.itemMap.get();
-
             if (Cache.provider == null) return; // TODO: wat
 
             mRoom = Cache.provider.getRoom(Long.parseLong(getArguments().getString(ARG_ITEM_ID)));
@@ -85,11 +89,125 @@ public class RoomDetailFragment extends Fragment {
             }
 
             if (mRoom.machines != null) {
-                ((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(getActivity(), mRoom.machines));
+                fillTable();
             }
         }
 
         return rootView;
+    }
+
+    protected void fillTable() {
+        TableLayout grid = (TableLayout) rootView.findViewById(R.id.machine_grid);
+        grid.removeAllViews();
+        if (mRoom == null || mRoom.machines == null) return; // bail if nothing to work with
+
+        // categorize into columns
+        ArrayList<Machine> washers = new ArrayList<Machine>();
+        ArrayList<Machine> driers = new ArrayList<Machine>();
+
+        for (Machine machine : mRoom.machines) {
+            if (machine.type.equals("washer")) {
+                washers.add(machine);
+            } else if (machine.type.equals("dryer")) {
+                driers.add(machine);
+            } else {
+                System.out.println("LaundryView: got funky machine type '" + machine.type + "', ignoring");
+            }
+        }
+
+        Collections.sort(washers, new MachineComparator());
+        Collections.sort(driers,  new MachineComparator());
+
+        // how many rows?
+        int rowCount = washers.size();
+        if (rowCount < driers.size())
+            rowCount = driers.size();
+
+        for (int i = 0; i < rowCount; i++) {
+            TableRow row = new TableRow(getActivity());
+
+            if (washers.size() > i) {
+                View mV = getMachineView(washers.get(i), row);
+                mV.setLayoutParams(new TableRow.LayoutParams(0));
+                row.addView(mV);
+            }
+
+            if (driers.size() > i) {
+                View mV = getMachineView(driers.get(i), row);
+                mV.setLayoutParams(new TableRow.LayoutParams(1));
+                row.addView(mV);
+            }
+
+            grid.addView(row);
+        }
+    }
+
+    public View getMachineView(Machine machine, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View row = inflater.inflate(R.layout.machine_list_item, parent, false);
+
+        TextView machineNum = (TextView) row.findViewById(R.id.machine_number);
+        TextView machineStatus = (TextView) row.findViewById(R.id.machine_status);
+        TextView machineMessage = (TextView) row.findViewById(R.id.machine_message);
+
+        machineNum.setText(machine.number);
+
+        TextView bgL = (TextView) row.findViewById(R.id.bg_dark);
+        TextView bgR = (TextView) row.findViewById(R.id.bg_light);
+
+        bgL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 0));
+        bgR.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
+
+        switch (machine.status) {
+            case 0:
+                machineMessage.setText("");
+                if (machine.message == null) {
+                    machineStatus.setText(machine.timeLeft + " minutes left");
+                } else if (machine.message.startsWith("extended cycle")) {
+                    machineStatus.setText("extended cycle");
+                    machineMessage.setText(machine.message.substring(14));
+                } else {
+                    machineStatus.setText(machine.message);
+                }
+
+                bgL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, machine.cycleLength - machine.timeLeft));
+                bgR.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, machine.timeLeft));
+
+                bgL.setBackgroundColor(Color.parseColor("#ff0000"));
+                bgR.setBackgroundColor(Color.parseColor("#ff8080"));
+                break;
+
+            case 1:
+                machineMessage.setText("");
+                if (machine.message == null) {
+                    machineStatus.setText(machine.message);
+                } else if (machine.message.startsWith("cycle ended")) {
+                    machineStatus.setText("cycle ended");
+                    machineMessage.setText(machine.message.substring(11));
+                } else {
+                    machineStatus.setText("");
+                }
+
+                bgR.setBackgroundColor(Color.parseColor("#80ff80"));
+                break;
+
+            case 2:
+                machineStatus.setText("cycle has ended");
+                machineMessage.setText("door still closed");
+
+                bgR.setBackgroundColor(Color.parseColor("#ffff80"));
+                break;
+
+            default:
+                machineStatus.setText(machine.message);
+                machineMessage.setText("");
+                bgR.setBackgroundColor(Color.parseColor("#808080"));
+        }
+
+        machineStatus.setVisibility (( machineStatus.getText() == "") ? TextView.GONE : TextView.VISIBLE);
+        machineMessage.setVisibility((machineMessage.getText() == "") ? TextView.GONE : TextView.VISIBLE);
+
+        return row;
     }
 
     @Override
@@ -101,7 +219,7 @@ public class RoomDetailFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.refresh_option:
+            case R.id.refresh_option: // TODO: if no machines, try that first :)
                 if (mAuthTask == null && mAuthTask2 == null) {
                     mAuthTask2 = new UserLoginTask2();
                     mAuthTask2.execute(mRoom);
@@ -112,10 +230,6 @@ public class RoomDetailFragment extends Fragment {
     }
 
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
     private class UserLoginTask extends AsyncTask<Room, Void, Room> {
         @Override
         protected Room doInBackground(Room... params) {
@@ -126,33 +240,17 @@ public class RoomDetailFragment extends Fragment {
         @Override
         protected void onPostExecute(final Room data) {
             mAuthTask = null;
-            //showProgress(false);
-            //mItem = data;
-            //if (rootView!=null && mItem !=null)
-            //((TextView) rootView.findViewById(R.id.room_detail)).setText(mItem.content);
 
-            ///((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(
-            ///        getActivity(),data));
+            fillTable();
 
-            // TODO: make sure we still exist
             if (data.machines == null) return; // probably no network
-            ((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(getActivity(), data.machines));
-
             mAuthTask2 = new UserLoginTask2();
             mAuthTask2.execute(mRoom);
-
-            /*if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }*/
         }
 
         @Override
         protected void onCancelled() {
             mAuthTask = null;
-            //showProgress(false);
         }
     }
 
@@ -166,29 +264,14 @@ public class RoomDetailFragment extends Fragment {
         @Override
         protected void onPostExecute(final Room data) {
             mAuthTask2 = null;
-            //showProgress(false);
-            //mItem = data;
-            //if (rootView!=null && mItem !=null)
-            //((TextView) rootView.findViewById(R.id.room_detail)).setText(mItem.content);
 
-            ///((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(
-            ///        getActivity(),data));
-
-            // TODO: make sure we still exist
-            ((GridView) rootView.findViewById(R.id.machine_grid)).invalidateViews();//.setAdapter(new MachineArrayAdapter(getActivity(), data.machines));
-
-            /*if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }*/
+            // TODO: be more smooth about the view swaps
+            fillTable();
         }
 
         @Override
         protected void onCancelled() {
             mAuthTask2 = null;
-            //showProgress(false);
         }
     }
 }
