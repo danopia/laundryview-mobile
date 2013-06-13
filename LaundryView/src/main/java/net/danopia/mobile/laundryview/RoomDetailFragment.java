@@ -126,6 +126,7 @@ public class RoomDetailFragment extends Fragment {
             ///        getActivity(),data));
 
             // TODO: make sure we still exist
+            if (data.machines == null) return; // probably no network
             ((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(getActivity(), data.machines));
 
             mAuthTask2 = new UserLoginTask2();
