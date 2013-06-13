@@ -1,6 +1,7 @@
 package net.danopia.mobile.laundryview;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -42,6 +43,8 @@ public class RoomListFragment extends ListFragment {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+
+    private AlertDialog mAD = null;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -177,6 +180,14 @@ public class RoomListFragment extends ListFragment {
         protected void onPostExecute(final Provider data) {
             mAuthTask = null;
             Cache.provider = data;
+
+            if (Cache.provider.isDemo && mAD == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("LaundryView is only giving demo information.\n\nIf you expected more, try connecting to campus wifi and refreshing.");
+                builder.setPositiveButton("Okay", null); // TODO: i18n
+                mAD = builder.create();
+                mAD.show();
+            }
 
             // TODO: make sure we still exist
             getActivity().setTitle(Cache.provider.name);
