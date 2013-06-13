@@ -7,13 +7,26 @@ import java.util.List;
  */
 public class Provider {
     public final String name;
+    public final boolean isSingleLoc;
+    public final boolean isDemo;
     public final Integer gallonsSaved;
     public final List<Location> locations;
 
     public Provider(String name, Integer gallonsSaved, List<Location> locations) {
-        this.name = name;
         this.gallonsSaved = gallonsSaved;
         this.locations = locations;
+
+        this.isSingleLoc = (locations.size() == 1);
+
+        if (this.isSingleLoc) {
+            this.name = locations.get(0).name;
+        } else if (name != null) {
+            this.name = name;
+        } else {
+            this.name = "Unknown Provider";
+        }
+
+        this.isDemo = (this.name == "Demo Location");
     }
 
     public Room getRoom(long id) {

@@ -121,7 +121,7 @@ public class Client {
             int gals = Integer.parseInt(m.group(1).replaceAll(",", ""));
             return new Provider(Util.titleCase(m.group(2)), gals, locations);
         } else {
-            return new Provider("Unknown Provider", 0, locations);
+            return new Provider(null, 0, locations);
         }
     }
 
@@ -151,10 +151,11 @@ public class Client {
             } else //noinspection StatementWithEmptyBody,StatementWithEmptyBody
                 if (type.equals("tableSm") // towers
                     || type.equals("sink") // e.g. van r
+                    || type.equals("tableLg") // york university - alcuin college
                     || type.equals("cardReader")) { // public demo
                 // do nothing
             } else {
-                System.out.println("Unknown machine type found: " + type); // TODO: report
+                System.out.println("LaundryView: Unknown machine type found: " + type); // TODO: report
             }
         }
 
@@ -163,7 +164,7 @@ public class Client {
 
     public static void updateRoom(Room room) {
         if (room == null) {
-            System.out.println("LAUNDRYVIEWMOBILE: Asked to update a null room");
+            System.out.println("LaundryView: Asked to update a null room");
             return;
         }
 
