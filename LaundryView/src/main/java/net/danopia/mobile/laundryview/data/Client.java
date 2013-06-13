@@ -40,7 +40,8 @@ public class Client {
 
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
-        //getPage("viewcrm"); // 2591	CRM - Bradford, Bristol, Cambridge, Edinburgh, Lincoln, London, Manchester, Nottingham, Oxford, Penryn (/viewcrm) [CIRCUIT]
+
+        // getPage("stonybrook"); // Hardcode a location for development reasons
     }
 
     private static String getPage(String path) {
@@ -60,8 +61,10 @@ public class Client {
             in.close();
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         } finally {
             if (urlConnection != null)
                 urlConnection.disconnect();
@@ -72,6 +75,7 @@ public class Client {
 
     protected static Map<String, String> getDataFile(String path) {
         String raw = getPage(path);
+        if (raw == null) return null;
 
         Map<String, String> data = new HashMap<String, String>();
         if (raw.length() == 0) return data;
@@ -97,7 +101,7 @@ public class Client {
         Matcher m;
 
         String raw = getPage("lvs.php");
-        if (raw.isEmpty()) return null; // probably no network
+        if (raw == null) return null; // probably no network
 
         String chunk = raw.substring(raw.indexOf("<div class=\"home-schoolinfo\">"));
         chunk = chunk.substring(0, chunk.indexOf("class=\"bg-blue4\""));
@@ -134,6 +138,12 @@ public class Client {
         List<Machine> machines = new ArrayList<Machine>();
 
         Map<String, String> data = getDataFile("staticRoomData.php?location=" + room.id);
+        if (data == null) return;
+
+        if (data.isEmpty()) { // classic room, no enhanced data
+            return; // TODO: /classic_laundry_room_ajax.php?lr=
+        }
+
         for (int i = 1; data.containsKey("machineData" + i); i++) {
             String[] values = data.get("machineData" + i).split(":");
             data.remove("machineData" + i);
@@ -174,6 +184,8 @@ public class Client {
         }
 
         Map<String, String> data = getDataFile("dynamicRoomData.php?location=" + room.id);
+        if (data == null) return;
+
         for (int i = 1; data.containsKey("machineStatus" + i); i++) {
             String[] values = data.get("machineStatus" + i).split(":");
             data.remove("machineStatus" + i);
@@ -186,7 +198,8 @@ public class Client {
                     int cycleLength = Integer.parseInt(values[13]);
                     String message = (values[15].equals("0")) ? null : values[15];
 
-                    room.getMachine(id).enhance(status, timeLeft, cycleLength, message);
+                    if (room.getMachine(id) != null)
+                        room.getMachine(id).enhance(status, timeLeft, cycleLength, message);
 
                 case 9:
                     status = Integer.parseInt(values[0]);
@@ -195,7 +208,8 @@ public class Client {
                     cycleLength = Integer.parseInt(values[4]);
                     message = (values[6].equals("0")) ? null : values[6];
 
-                    room.getMachine(id).enhance(status, timeLeft, cycleLength, message);
+                    if (room.getMachine(id) != null)
+                        room.getMachine(id).enhance(status, timeLeft, cycleLength, message);
             }
         }
     }
