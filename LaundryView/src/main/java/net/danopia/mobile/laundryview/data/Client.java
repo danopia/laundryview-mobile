@@ -33,7 +33,7 @@ public class Client {
 
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
-        getPage("viewcrm"); // 2591	CRM - Bradford, Bristol, Cambridge, Edinburgh, Lincoln, London, Manchester, Nottingham, Oxford, Penryn (/viewcrm) [CIRCUIT]
+        //getPage("viewcrm"); // 2591	CRM - Bradford, Bristol, Cambridge, Edinburgh, Lincoln, London, Manchester, Nottingham, Oxford, Penryn (/viewcrm) [CIRCUIT]
     }
 
     private static String getPage(String path) {
