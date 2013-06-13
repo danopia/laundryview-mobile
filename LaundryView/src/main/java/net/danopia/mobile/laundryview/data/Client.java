@@ -29,6 +29,8 @@ public class Client {
         // Work around pre-Froyo bugs in HTTP connection reuse.
         if (Integer.parseInt(Build.VERSION.SDK) < Build.VERSION_CODES.FROYO) {
             System.setProperty("http.keepAlive", "false");
+        } else { // Enforce otherwise, seems to improve performance
+            System.setProperty("http.keepAlive", "true");
         }
 
         CookieManager cookieManager = new CookieManager();
