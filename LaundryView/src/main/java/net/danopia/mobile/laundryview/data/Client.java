@@ -159,6 +159,11 @@ public class Client {
     }
 
     public static void updateRoom(Room room) {
+        if (room == null) {
+            System.out.println("LAUNDRYVIEWMOBILE: Asked to update a null room");
+            return;
+        }
+
         Map<String, String> data = getDataFile("dynamicRoomData.php?location=" + room.id);
         for (int i = 1; data.containsKey("machineStatus" + i); i++) {
             String[] values = data.get("machineStatus" + i).split(":");
