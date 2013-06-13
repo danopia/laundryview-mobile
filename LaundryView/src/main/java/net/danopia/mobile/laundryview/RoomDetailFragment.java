@@ -3,8 +3,14 @@ package net.danopia.mobile.laundryview;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridView;
+
 import net.danopia.mobile.laundryview.data.Client;
 import net.danopia.mobile.laundryview.data.MachineArrayAdapter;
 import net.danopia.mobile.laundryview.structs.Room;
@@ -67,7 +73,10 @@ public class RoomDetailFragment extends Fragment {
         if (mRoom != null) {
             if (getActivity().getTitle() != Cache.provider.name) {
                 getActivity().setTitle(mRoom.name);
-                getActivity().getActionBar().setSubtitle(Util.titleCase(Cache.provider.getRoomLocation(mRoom.id).name));
+
+                String subtitle = Util.titleCase(Cache.provider.getRoomLocation(mRoom.id).name);
+                if (subtitle.equals(mRoom.name)) subtitle = Cache.provider.name;
+                getActivity().getActionBar().setSubtitle(subtitle);
             }
         }
 
