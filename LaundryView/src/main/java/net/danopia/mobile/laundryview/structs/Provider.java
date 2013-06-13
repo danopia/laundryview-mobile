@@ -26,7 +26,7 @@ public class Provider {
             this.name = "Unknown Provider";
         }
 
-        this.isDemo = (this.name == "Demo Location");
+        this.isDemo = (this.name.equals("Demo Location"));
     }
 
     public Room getRoom(long id) {
