@@ -38,6 +38,8 @@ public class Room {
     }
 
     public Machine getMachine(int id) {
+        if (this.machines == null) return null;
+
         for (Machine machine : this.machines) {
             if (machine.id == id)
                 return machine;
