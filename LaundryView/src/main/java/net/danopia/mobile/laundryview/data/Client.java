@@ -96,6 +96,7 @@ public class Client {
     private static final Pattern p1 = Pattern.compile("<(?:div|h4) [^>]+>\\s+(.+?)\\s+</(?:div|h4)>");
     private static final Pattern p2 = Pattern.compile("<a href=\"laundry_room\\.php\\?lr=(\\d+)\"[^>]+>\\s+(.+?)\\s+<[^<]+<span[^>]+>\\((\\d+) W(?:ASHERS)? / (\\d+) D(?:RYERS)?\\)</");
     private static final Pattern p3 = Pattern.compile("flashvars = \\{gallons: \"([\\d,]+)\", room: \"gallons of water saved at [ ]?([^\"]+)\"\\}");
+    private static final Pattern p4 = Pattern.compile("<div class=\"home-box2\"><a href=\"([^\"]+)\"[^>]+>Click here</a> to report a problem [^<]+?at ([^<]+?)\\.</div>");
 
     public static Provider getLocations() {
         Matcher m;
@@ -125,13 +126,23 @@ public class Client {
             locations.add(new Location(Util.titleCase(name), rooms));
         }
 
+        String name = null;
+        int gals = 0;
+        String reportLink = null;
+
         m = p3.matcher(raw);
         if (m.find()) {
-            int gals = Integer.parseInt(m.group(1).replaceAll(",", ""));
-            return new Provider(Util.titleCase(m.group(2)), gals, locations);
-        } else {
-            return new Provider(null, 0, locations);
+            gals = Integer.parseInt(m.group(1).replaceAll(",", ""));
+            name = Util.titleCase(m.group(2));
         }
+
+        m = p4.matcher(raw);
+        if (m.find()) {
+            reportLink = m.group(1);
+            name = Util.titleCase(m.group(2));
+        }
+
+        return new Provider(name, gals, reportLink, locations);
     }
 
     public static void getRoom(Room room) {

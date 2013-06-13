@@ -10,10 +10,12 @@ public class Provider {
     public final boolean isSingleLoc;
     public final boolean isDemo;
     public final Integer gallonsSaved;
+    public final String reportLink; // i.e. "mailto:address@one; address@two"
     public final List<Location> locations;
 
-    public Provider(String name, Integer gallonsSaved, List<Location> locations) {
+    public Provider(String name, Integer gallonsSaved, String reportLink, List<Location> locations) {
         this.gallonsSaved = gallonsSaved;
+        this.reportLink = reportLink;
         this.locations = locations;
 
         this.isSingleLoc = (locations.size() == 1);
