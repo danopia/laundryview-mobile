@@ -70,12 +70,13 @@ public class Client {
     protected static Map<String, String> getDataFile(String path) {
         String raw = getPage(path);
 
+        Map<String, String> data = new HashMap<String, String>();
+        if (raw.length() == 0) return data;
+
         // UGLY HACK. THANKS MACGREY.
         raw = raw.replaceAll("&deg;", "°").replaceAll("&amp;", "&");
-
         String[] parts = raw.substring(1).split("&");
 
-        Map<String, String> data = new HashMap<String, String>();
         for (String part : parts) {
             String[] keyval = part.split("=", 2);
             if (keyval.length == 2)
