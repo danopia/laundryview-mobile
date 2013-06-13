@@ -55,11 +55,16 @@ public class RoomDetailFragment extends Fragment {
             // to load content from a content provider.
             //mItem = DummyContent.DUMMY.itemMap.get();
 
-            if (Cache.provider != null) {
-                mRoom = Cache.provider.getRoom(Long.parseLong(getArguments().getString(ARG_ITEM_ID)));
+            if (Cache.provider == null) return; // TODO: wat
 
+            mRoom = Cache.provider.getRoom(Long.parseLong(getArguments().getString(ARG_ITEM_ID)));
+
+            if (mRoom.machines == null) {
                 mAuthTask = new UserLoginTask();
                 mAuthTask.execute(mRoom);
+            } else {
+                mAuthTask2 = new UserLoginTask2();
+                mAuthTask2.execute(mRoom);
             }
         }
     }
@@ -77,6 +82,10 @@ public class RoomDetailFragment extends Fragment {
                 String subtitle = Util.titleCase(Cache.provider.getRoomLocation(mRoom.id).name);
                 if (subtitle.equals(mRoom.name)) subtitle = Cache.provider.name;
                 getActivity().getActionBar().setSubtitle(subtitle);
+            }
+
+            if (mRoom.machines != null) {
+                ((GridView) rootView.findViewById(R.id.machine_grid)).setAdapter(new MachineArrayAdapter(getActivity(), mRoom.machines));
             }
         }
 
