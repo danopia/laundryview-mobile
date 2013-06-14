@@ -7,7 +7,7 @@
     <string name="dryers">Dryers</string>
     <string name="out_of_service">out of service</string>
     <string name="twolines">\n</string>
-    <string name="error_no_network">Can't load room list.
+    <string name="error_no_network">Can\'t load room list.
 
         Check that you have network, and try again.
     </string>

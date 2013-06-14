@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 
 /**
  * An activity representing a list of Rooms. This activity
@@ -77,5 +79,17 @@ public class RoomListActivity extends FragmentActivity
             detailIntent.putExtra(RoomDetailFragment.ARG_ITEM_ID, id);
             startActivity(detailIntent);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance().activityStart(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EasyTracker.getInstance().activityStop(this);
     }
 }
