@@ -7,4 +7,16 @@
     <string name="dryers">Dryers</string>
     <string name="out_of_service">out of service</string>
     <string name="twolines">\n</string>
+    <string name="error_no_network">Can't load room list.
+
+        Check that you have network, and try again.
+    </string>
+    <string name="no_network">Network Unavailable</string>
+    <string name="close_button">Close</string>
+    <string name="no_campus">Campus Unavailable</string>
+    <string name="error_no_campus">LaundryView is only giving demo information.
+
+        If you expected more, try connecting to campus wifi and refreshing.
+    </string>
+    <string name="continue_button">Continue</string>
 </resources>

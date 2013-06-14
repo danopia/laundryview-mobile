@@ -289,7 +289,6 @@ public class RoomDetailFragment extends Fragment {
         protected void onPostExecute(final Room data) {
             mAuthTask2 = null;
 
-            // TODO: be more smooth about the view swaps
             fillTable();
         }
 

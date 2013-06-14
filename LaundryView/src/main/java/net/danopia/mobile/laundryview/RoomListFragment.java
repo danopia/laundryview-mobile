@@ -189,9 +189,9 @@ public class RoomListFragment extends ListFragment {
             if (data == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                builder.setTitle("Network Unavailable");
-                builder.setMessage("Can't load room list.\n\nCheck that you have network, and try again.");
-                builder.setNeutralButton("Close", null); // TODO: i18n
+                builder.setTitle(R.string.no_network)
+                       .setMessage(R.string.error_no_network)
+                       .setNeutralButton(R.string.close_button, null);
 
                 mAD = builder.create();
                 mAD.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -207,11 +207,12 @@ public class RoomListFragment extends ListFragment {
             if (Cache.provider.isDemo && mAD == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                builder.setTitle("Campus Unavailable");
-                builder.setMessage("LaundryView is only giving demo information.\n\nIf you expected more, try connecting to campus wifi and refreshing.");
-                builder.setNeutralButton("Continue", null); // TODO: i18n
+                builder.setTitle(R.string.no_campus)
+                       .setMessage(R.string.error_no_campus)
+                       .setNeutralButton(R.string.continue_button, null);
 
-                (mAD = builder.create()).show();
+                mAD = builder.create();
+                mAD.show();
             }
 
             // TODO: make sure we still exist
