@@ -1,8 +1,10 @@
 package net.danopia.mobile.laundryview;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -72,6 +74,12 @@ public class RoomDetailFragment extends Fragment {
             }
         }
     }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    protected void doTheThing(String title) {
+        getActivity().getActionBar().setSubtitle(title);
+    }
+
     private View rootView=null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +93,10 @@ public class RoomDetailFragment extends Fragment {
 
                 String subtitle = Util.titleCase(Cache.provider.getRoomLocation(mRoom.id).name);
                 if (subtitle.equals(mRoom.name)) subtitle = Cache.provider.name;
-                getActivity().getActionBar().setSubtitle(subtitle);
+
+                if (Integer.parseInt(Build.VERSION.SDK) >= Build.VERSION_CODES.HONEYCOMB) {
+                    doTheThing(subtitle);
+                }
             }
 
             if (mRoom.machines != null) {
@@ -100,6 +111,10 @@ public class RoomDetailFragment extends Fragment {
         TableLayout grid = (TableLayout) rootView.findViewById(R.id.machine_grid);
         grid.removeAllViews();
         if (mRoom == null || mRoom.machines == null) return; // bail if nothing to work with
+        if (getActivity() == null) {
+            System.out.println("LaundryView: null activity, bailing");
+            return;
+        }
 
         // categorize into columns
         ArrayList<Machine> washers = new ArrayList<Machine>();
@@ -157,6 +172,10 @@ public class RoomDetailFragment extends Fragment {
 
         bgL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 0));
         bgR.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
+
+        if (machine.message != null && machine.message.startsWith("cycle has ended")) {
+            machine.status = 2;
+        }
 
         switch (machine.status) {
             case 0:

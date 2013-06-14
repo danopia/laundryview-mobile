@@ -1,6 +1,8 @@
 package net.danopia.mobile.laundryview;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -17,13 +19,20 @@ import android.view.MenuItem;
  */
 public class RoomDetailActivity extends FragmentActivity {
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    protected void doTheThing() {
+        // Show the Up button in the action bar.
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_detail);
 
-        // Show the Up button in the action bar.
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (Integer.parseInt(Build.VERSION.SDK) >= Build.VERSION_CODES.HONEYCOMB) {
+            doTheThing();
+        }
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
