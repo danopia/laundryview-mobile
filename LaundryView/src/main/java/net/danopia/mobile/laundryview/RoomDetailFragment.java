@@ -192,8 +192,8 @@ public class RoomDetailFragment extends Fragment {
                 bgL.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, machine.cycleLength - machine.timeLeft));
                 bgR.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, machine.timeLeft));
 
-                bgL.setBackgroundColor(Color.parseColor("#ff0000"));
-                bgR.setBackgroundColor(Color.parseColor("#ff8080"));
+                bgL.setBackgroundColor(Color.parseColor("#ff8080"));
+                bgR.setBackgroundColor(Color.parseColor("#ffc0c0"));
                 break;
 
             case 1:
@@ -207,20 +207,20 @@ public class RoomDetailFragment extends Fragment {
                     machineStatus.setText("");
                 }
 
-                bgR.setBackgroundColor(Color.parseColor("#80ff80"));
+                bgR.setBackgroundColor(Color.parseColor("#c0ffc0"));
                 break;
 
             case 2:
                 machineStatus.setText("cycle has ended");
                 machineMessage.setText("door still closed");
 
-                bgR.setBackgroundColor(Color.parseColor("#ffff80"));
+                bgR.setBackgroundColor(Color.parseColor("#ffffc0"));
                 break;
 
             default:
                 machineStatus.setText(machine.message);
                 machineMessage.setText("");
-                bgR.setBackgroundColor(Color.parseColor("#808080"));
+                bgR.setBackgroundColor(Color.parseColor("#c0c0c0"));
         }
 
         machineStatus.setVisibility (( machineStatus.getText() == "") ? TextView.GONE : TextView.VISIBLE);
