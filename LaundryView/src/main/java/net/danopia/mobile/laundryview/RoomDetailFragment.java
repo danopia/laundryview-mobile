@@ -18,6 +18,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import net.danopia.mobile.laundryview.data.Client;
 import net.danopia.mobile.laundryview.data.MachineComparator;
 import net.danopia.mobile.laundryview.structs.Machine;
@@ -255,6 +257,13 @@ public class RoomDetailFragment extends Fragment {
 
 
     private class UserLoginTask extends AsyncTask<Room, Void, Room> {
+        long startTime = 0;
+
+        @Override
+        protected void onPreExecute() {
+            startTime = System.currentTimeMillis();
+        }
+
         @Override
         protected Room doInBackground(Room... params) {
             Client.getRoom(params[0]);
@@ -270,6 +279,9 @@ public class RoomDetailFragment extends Fragment {
             if (data.machines == null) return; // probably no network
             mAuthTask2 = new UserLoginTask2();
             mAuthTask2.execute(mRoom);
+
+            EasyTracker.getTracker().sendEvent("dataLoad", "room", Cache.provider.name + " - " + data.id + ": " + data.name, 0L );
+            EasyTracker.getTracker().sendTiming("dataLoad", System.currentTimeMillis() - startTime, "roomStatic", data.id + ": " + data.name);
         }
 
         @Override
@@ -279,6 +291,13 @@ public class RoomDetailFragment extends Fragment {
     }
 
     private class UserLoginTask2 extends AsyncTask<Room, Void, Room> {
+        long startTime = 0;
+
+        @Override
+        protected void onPreExecute() {
+            startTime = System.currentTimeMillis();
+        }
+
         @Override
         protected Room doInBackground(Room... params) {
             Client.updateRoom(params[0]);
@@ -290,6 +309,8 @@ public class RoomDetailFragment extends Fragment {
             mAuthTask2 = null;
 
             fillTable();
+
+            EasyTracker.getTracker().sendTiming("dataLoad", System.currentTimeMillis() - startTime, "roomDynamic", data.id + ": " + data.name);
         }
 
         @Override

@@ -9,6 +9,8 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ListView;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import net.danopia.mobile.laundryview.data.Client;
 import net.danopia.mobile.laundryview.data.LocationArrayAdapter;
 import net.danopia.mobile.laundryview.structs.Provider;
@@ -177,6 +179,13 @@ public class RoomListFragment extends ListFragment {
     }
 
     private class UserLoginTask extends AsyncTask<Void, Void, Provider> {
+        long startTime = 0;
+
+        @Override
+        protected void onPreExecute() {
+            startTime = System.currentTimeMillis();
+        }
+
         @Override
         protected Provider doInBackground(Void... params) {
             return Client.getLocations();
@@ -218,6 +227,10 @@ public class RoomListFragment extends ListFragment {
             // TODO: make sure we still exist
             getActivity().setTitle(Cache.provider.name);
             setListAdapter(new LocationArrayAdapter(getActivity(), Cache.provider.locations));
+
+            EasyTracker.getTracker().sendEvent("dataLoad", "provider", Cache.provider.name + " - " + Cache.provider.locations.size() + " locs", 0L );
+            EasyTracker.getTracker().sendTiming("dataLoad", System.currentTimeMillis() - startTime, "provider", Cache.provider.name);
+
         }
 
         @Override
