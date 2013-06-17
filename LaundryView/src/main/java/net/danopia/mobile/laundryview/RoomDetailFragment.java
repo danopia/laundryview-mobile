@@ -242,7 +242,9 @@ public class RoomDetailFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.refresh_option:
                 if (mAuthTask == null && mAuthTask2 == null) {
-                    if (mRoom.machines == null) {
+                    if (mRoom == null) {
+                        return true;
+                    } else if (mRoom.machines == null) {
                         mAuthTask = new UserLoginTask();
                         mAuthTask.execute(mRoom);
                     } else {
