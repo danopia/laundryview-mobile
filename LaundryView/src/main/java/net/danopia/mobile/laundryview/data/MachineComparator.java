@@ -10,9 +10,9 @@ import java.util.Comparator;
 public class MachineComparator implements Comparator<Machine> {
     @Override
     public int compare(Machine m1, Machine m2) {
-        if (Integer.parseInt(m1.number) > 0 && Integer.parseInt(m2.number) > 0)
-            return Double.compare(Integer.parseInt(m1.number), Integer.parseInt(m2.number));
+        String n1 = "0" + m1.number.replaceAll("[^0-9]", "");
+        String n2 = "0" + m2.number.replaceAll("[^0-9]", "");
 
-        return m1.number.compareTo(m2.number);
+        return Double.compare(Integer.parseInt(n1), Integer.parseInt(n2));
     }
 }
