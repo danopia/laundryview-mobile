@@ -5,6 +5,8 @@ import net.danopia.mobile.laundryview.structs.Machine;
 import java.util.Comparator;
 
 /**
+ * Compares Machines by their assigned number
+ *
  * Created by daniel on 6/13/13.
  */
 public class MachineComparator implements Comparator<Machine> {
