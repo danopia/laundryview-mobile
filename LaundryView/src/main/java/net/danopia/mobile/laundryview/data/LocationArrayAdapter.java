@@ -23,7 +23,7 @@ public class LocationArrayAdapter extends ArrayAdapter<LocationArrayAdapter.Unio
         super(context, 0, new ArrayList<Union>());
 
         for (Location location : data) {
-            if (data.size() > 1) // handle single-location case more visually-pleasingly
+            if (data.size() > 1) // handle single-location case in a more visually-pleasing way
                 this.add(new Union(location));
 
             for (Room room : location.rooms) {

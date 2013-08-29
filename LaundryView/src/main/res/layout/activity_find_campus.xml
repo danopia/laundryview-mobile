@@ -1,55 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fillViewport="true"
-    android:paddingRight="15dp"
-    android:paddingLeft="15dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".FindCampusActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Welcome!"
-        android:id="@+id/textView7"
+        android:text="@string/welcome"
         android:layout_gravity="center"
         android:textSize="36dp" />
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:fillViewport="true">
+        android:layout_height="fill_parent">
 
         <LinearLayout
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:paddingBottom="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Connect to Campus Wifi"
-                android:id="@+id/textView"
-                android:layout_gravity="center" />
+                android:text="@string/connect_to_wifi"
+                android:layout_gravity="center"
+                android:singleLine="true" />
 
             <ImageButton
-                android:layout_width="72dp"
+                android:layout_width="144dp"
                 android:layout_height="72dp"
-                android:id="@+id/imageButton"
+                android:id="@+id/wifiButton"
                 android:layout_gravity="center"
                 android:src="@drawable/wifi_icon"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:contentDescription="@string/open_wifi_settings" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="- or -"
-                android:id="@+id/textView2"
+                android:text="@string/or"
                 android:layout_gravity="center"
                 android:layout_margin="20dp" />
 
@@ -57,31 +57,30 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Choose a Campus"
-                android:id="@+id/textView3"
+                android:text="@string/choose_campus"
                 android:layout_gravity="center" />
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"></LinearLayout>
+                android:layout_gravity="center"
+                android:id="@+id/campusList"></LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="- or -"
-                android:id="@+id/textView4"
+                android:text="@string/or"
                 android:layout_gravity="center"
-                android:layout_margin="20dp" />
+                android:layout_margin="20dp"
+                android:singleLine="false" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Enter a Link"
-                android:id="@+id/textView5"
+                android:text="@string/enter_link"
                 android:layout_gravity="center" />
 
             <LinearLayout
@@ -94,23 +93,24 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="laundryview.com/"
-                    android:id="@+id/textView6"
                     android:layout_gravity="center" />
 
                 <EditText
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editText"
+                    android:id="@+id/pathText"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:hint="winthrop" />
+                    android:hint="winthrop"
+                    android:selectAllOnFocus="true"
+                    android:singleLine="true" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
                     android:text="Go"
-                    android:id="@+id/button" />
+                    android:id="@+id/pathButton" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

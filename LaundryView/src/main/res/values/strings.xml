@@ -19,4 +19,10 @@
         If you expected more, try connecting to campus wifi and refreshing.
     </string>
     <string name="continue_button">Continue</string>
+    <string name="or">- or -</string>
+    <string name="connect_to_wifi">Connect to Campus Wifi</string>
+    <string name="open_wifi_settings">Open WiFi settings</string>
+    <string name="choose_campus">Choose a Campus</string>
+    <string name="enter_link">Enter a Link</string>
+    <string name="welcome">Welcome!</string>
 </resources>

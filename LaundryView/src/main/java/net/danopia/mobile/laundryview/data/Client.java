@@ -39,13 +39,15 @@ public class Client {
             System.setProperty("http.keepAlive", "true");
         }
 
-        CookieManager cookieManager = new CookieManager();
-        CookieHandler.setDefault(cookieManager);
-
-        // getPage("pitt"); // Hardcode a location for development reasons
+        resetCookies();
     }
 
-    private static String getPage(String path) {
+    public static void resetCookies() {
+        CookieManager cookieManager = new CookieManager();
+        CookieHandler.setDefault(cookieManager);
+    }
+
+    public static String getPage(String path) {
         BufferedReader in;
         StringBuilder sb = new StringBuilder();
         HttpURLConnection urlConnection = null;
