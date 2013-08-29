@@ -8,9 +8,13 @@ buildscript {
 }
 apply plugin: 'android'
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    compile files('libs/android-support-v4.jar')
-    compile files('libs/libGoogleAnalyticsV2.jar')
+    compile 'com.android.support:support-v4:13.0.+'
+    compile files('libs/libGoogleAnalyticsV2.jar', 'libs/gson-2.2.4.jar')
 }
 
 android {

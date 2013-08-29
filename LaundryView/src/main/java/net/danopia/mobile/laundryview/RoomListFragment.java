@@ -11,8 +11,8 @@ import android.widget.ListView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
-import net.danopia.mobile.laundryview.data.Client;
 import net.danopia.mobile.laundryview.data.LocationArrayAdapter;
+import net.danopia.mobile.laundryview.data.LvClient;
 import net.danopia.mobile.laundryview.structs.Provider;
 
 /**
@@ -188,7 +188,7 @@ public class RoomListFragment extends ListFragment {
 
         @Override
         protected Provider doInBackground(Void... params) {
-            return Client.getLocations();
+            return LvClient.getLocations();
         }
 
         @Override

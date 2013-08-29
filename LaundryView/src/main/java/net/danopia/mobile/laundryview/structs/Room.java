@@ -1,6 +1,6 @@
 package net.danopia.mobile.laundryview.structs;
 
-import net.danopia.mobile.laundryview.Util;
+import net.danopia.mobile.laundryview.util.Helpers;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class Room {
 
     public Room(long id, Map<String, String> meta, List<Machine> machines) {
         this.id = id;
-        this.name = Util.titleCase(meta.get("name"));
+        this.name = Helpers.titleCase(meta.get("name"));
         this.w = -1;
         this.d = -1;
 

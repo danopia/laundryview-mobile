@@ -25,4 +25,5 @@
     <string name="choose_campus">Choose a Campus</string>
     <string name="enter_link">Enter a Link</string>
     <string name="welcome">Welcome!</string>
+    <string name="go">Go</string>
 </resources>

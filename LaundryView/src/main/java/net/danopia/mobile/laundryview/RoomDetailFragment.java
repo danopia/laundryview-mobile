@@ -20,10 +20,11 @@ import android.widget.TextView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
-import net.danopia.mobile.laundryview.data.Client;
+import net.danopia.mobile.laundryview.data.LvClient;
 import net.danopia.mobile.laundryview.data.MachineComparator;
 import net.danopia.mobile.laundryview.structs.Machine;
 import net.danopia.mobile.laundryview.structs.Room;
+import net.danopia.mobile.laundryview.util.Helpers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,7 +94,7 @@ public class RoomDetailFragment extends Fragment {
             if (getActivity().getTitle() != Cache.provider.name) {
                 getActivity().setTitle(mRoom.name);
 
-                String subtitle = Util.titleCase(Cache.provider.getRoomLocation(mRoom.id).name);
+                String subtitle = Helpers.titleCase(Cache.provider.getRoomLocation(mRoom.id).name);
                 if (subtitle.equals(mRoom.name)) subtitle = Cache.provider.name;
 
                 if (Integer.parseInt(Build.VERSION.SDK) >= Build.VERSION_CODES.HONEYCOMB) {
@@ -268,7 +269,7 @@ public class RoomDetailFragment extends Fragment {
 
         @Override
         protected Room doInBackground(Room... params) {
-            Client.getRoom(params[0]);
+            LvClient.getRoom(params[0]);
             return params[0];
         }
 
@@ -302,7 +303,7 @@ public class RoomDetailFragment extends Fragment {
 
         @Override
         protected Room doInBackground(Room... params) {
-            Client.updateRoom(params[0]);
+            LvClient.updateRoom(params[0]);
             return params[0];
         }
 

@@ -2,11 +2,11 @@ package net.danopia.mobile.laundryview.data;
 
 import android.os.Build;
 
-import net.danopia.mobile.laundryview.Util;
 import net.danopia.mobile.laundryview.structs.Location;
 import net.danopia.mobile.laundryview.structs.Machine;
 import net.danopia.mobile.laundryview.structs.Provider;
 import net.danopia.mobile.laundryview.structs.Room;
+import net.danopia.mobile.laundryview.util.Helpers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  * Handles HTTP stuff
  * Created by danopia on 5/17/13.
  */
-public class Client {
+public class LvClient {
     private static final String BASE_URL = "http://www.laundryview.com/";
     // private static final String BASE_URL = "http://mobile.danopia.net/laundryview/data/";
 
@@ -123,10 +123,10 @@ public class Client {
                 m = p2.matcher(sChunks[j]);
                 m.find();
 
-                String rName = Util.titleCase(m.group(2).replace(name + " - ", "").replace(name + " ", ""));
+                String rName = Helpers.titleCase(m.group(2).replace(name + " - ", "").replace(name + " ", ""));
                 rooms.add(new Room(Long.parseLong(m.group(1)), rName, Integer.parseInt(m.group(3)), Integer.parseInt(m.group(4))));
             }
-            locations.add(new Location(Util.titleCase(name), rooms));
+            locations.add(new Location(Helpers.titleCase(name), rooms));
         }
 
         String name = null;
@@ -136,13 +136,13 @@ public class Client {
         m = p3.matcher(raw);
         if (m.find()) {
             gals = Integer.parseInt(m.group(1).replaceAll(",", ""));
-            name = Util.titleCase(m.group(2));
+            name = Helpers.titleCase(m.group(2));
         }
 
         m = p4.matcher(raw);
         if (m.find()) {
             reportLink = m.group(1);
-            name = Util.titleCase(m.group(2));
+            name = Helpers.titleCase(m.group(2));
         }
 
         return new Provider(name, gals, reportLink, locations);
