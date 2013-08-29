@@ -18,9 +18,6 @@ import java.util.List;
  * Created by danopia on 5/16/13.
  */
 public class LocationArrayAdapter extends ArrayAdapter<LocationArrayAdapter.Union> {
-    //private static final String tag = "LocationArrayAdapter";
-    //private final Context context;
-
     public LocationArrayAdapter(Context context, List<Location> data)
     {
         super(context, 0, new ArrayList<Union>());
@@ -33,8 +30,6 @@ public class LocationArrayAdapter extends ArrayAdapter<LocationArrayAdapter.Unio
                 this.add(new Union(room));
             }
         }
-
-        //this.context = context;
     }
 
     @Override
@@ -45,7 +40,7 @@ public class LocationArrayAdapter extends ArrayAdapter<LocationArrayAdapter.Unio
         //if (row == null)
         //{
             // ROW INFLATION
-            LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             if (isEnabled(position)) {
                 row = inflater.inflate(R.layout.room_list_item, parent, false);
             } else {
@@ -53,20 +48,12 @@ public class LocationArrayAdapter extends ArrayAdapter<LocationArrayAdapter.Unio
             }
         //}
 
-        // Get item
         Union union = getItem(position);
 
         if (isEnabled(position)) {
             ((TextView) row.findViewById(R.id.name)).setText(union.room.name);
             ((TextView) row.findViewById(R.id.washer_avail)).setText(union.room.w + " W");
             ((TextView) row.findViewById(R.id.dryer_avil)).setText(union.room.d + " D");
-
-            //buddyName = (TextView) row.findViewById(R.id.buddy_name);   //change this to textField1  from simple_list_item_2
-            //buddyName.setText(buddy.toString());
-
-            //buddyStatus = (TextView) row.findViewById(R.id.buddy_mood); //change this to textField2 from simple_list_item_2
-            //buddyStatus.setText(buddy.getMood());
-            //      Log.d(tag, buddy.getIdentity()+"'s mood is "+buddyStatus.getText());
         } else {
             ((TextView) row.findViewById(R.id.list_header_title)).setText(union.location.name);
         }
