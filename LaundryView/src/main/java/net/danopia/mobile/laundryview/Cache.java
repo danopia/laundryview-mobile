@@ -7,4 +7,8 @@ import net.danopia.mobile.laundryview.structs.Provider;
  */
 class Cache {
     public static Provider provider = null;
+
+    public static void bust() {
+        provider = null;
+    }
 }

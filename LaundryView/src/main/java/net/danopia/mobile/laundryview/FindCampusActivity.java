@@ -32,6 +32,7 @@ import java.util.List;
  */
 public class FindCampusActivity extends ListActivity {
     Location location;
+    private List<Campus> nearCampuses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class FindCampusActivity extends ListActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            Cache.bust();
                             LvClient.resetCookies();
                             LvClient.getPage(entry.toLowerCase());
                             AssistClient.submitPath(entry, loc);
@@ -107,6 +109,7 @@ public class FindCampusActivity extends ListActivity {
             }
         });
 
+        setListAdapter(new ArrayAdapter<String>(this, 0));
         if (location == null) {
             findViewById(R.id.spinner).setVisibility(View.GONE);
             //findViewById(R.id.campusList).setVisibility(View.GONE);
@@ -145,7 +148,8 @@ public class FindCampusActivity extends ListActivity {
         ListView list = getListView(); // (ListView) findViewById(R.id.campusList);
         //list.setVisibility(View.VISIBLE);
 
-        ArrayAdapter<Campus> adapter = new ArrayAdapter<Campus>(this, 0, campuses.subList(0, 5)) {
+        nearCampuses = campuses.subList(0, 5);
+        list.setAdapter(new ArrayAdapter<Campus>(this, 0, nearCampuses) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = convertView;
@@ -160,15 +164,31 @@ public class FindCampusActivity extends ListActivity {
                 ((TextView) view.findViewById(R.id.textDist)).setText(campus.distance + "km");
                 return view;
             }
-        };
-        list.setAdapter(adapter);
-
-        /*for (Campus campus : campuses.subList(0, 3)) {
-            View item = inflater.inflate(R.layout.campus_list_item, parent, false);
-            ((TextView) item.findViewById(R.id.textName)).setText(campus.name);
-            ((TextView) item.findViewById(R.id.textDist)).setText(campus.distance + "km");
-            parent.addView(item);
-        }*/
+        });
     }
 
+    @Override
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        final Campus campus = nearCampuses.get(position - 1);
+
+        getListView().setEnabled(false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Cache.bust();
+                LvClient.resetCookies();
+                LvClient.getPage(campus.path);
+                AssistClient.submitPath(campus.path, location);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getListView().setEnabled(true);
+
+                        startActivity(new Intent(FindCampusActivity.this, RoomListActivity.class));
+                    }
+                });
+            }
+        }).start();
+    }
 }
