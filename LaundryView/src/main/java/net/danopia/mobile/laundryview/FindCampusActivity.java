@@ -1,6 +1,6 @@
 package net.danopia.mobile.laundryview;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -10,11 +10,13 @@ import android.provider.Settings;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,17 +30,19 @@ import java.util.List;
 /**
  * Created by daniel on 8/29/13.
  */
-public class FindCampusActivity extends Activity {
+public class FindCampusActivity extends ListActivity {
     Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_find_campus);
 
         final LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         final Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         location = loc;
+
+        getListView().addHeaderView(View.inflate(this, R.layout.activity_find_campus_top, null));
+        getListView().addFooterView(View.inflate(this, R.layout.activity_find_campus_bottom, null));
 
         ((ImageButton) findViewById(R.id.wifiButton)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,8 +109,13 @@ public class FindCampusActivity extends Activity {
 
         if (location == null) {
             findViewById(R.id.spinner).setVisibility(View.GONE);
+            //findViewById(R.id.campusList).setVisibility(View.GONE);
             findViewById(R.id.textNoLoc).setVisibility(View.VISIBLE);
         } else {
+            findViewById(R.id.spinner).setVisibility(View.VISIBLE);
+            //findViewById(R.id.campusList).setVisibility(View.GONE);
+            findViewById(R.id.textNoLoc).setVisibility(View.GONE);
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -132,17 +141,34 @@ public class FindCampusActivity extends Activity {
         }
         Collections.sort(campuses);
 
-        LinearLayout parent = (LinearLayout) findViewById(R.id.campusList);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        findViewById(R.id.spinner).setVisibility(View.GONE);
+        ListView list = getListView(); // (ListView) findViewById(R.id.campusList);
+        //list.setVisibility(View.VISIBLE);
 
-        parent.removeAllViews();
+        ArrayAdapter<Campus> adapter = new ArrayAdapter<Campus>(this, 0, campuses.subList(0, 5)) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = convertView;
+                Campus campus = getItem(position);
 
-        for (Campus campus : campuses.subList(0, 3)) {
+                if (view == null) {
+                    LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    view = vi.inflate(R.layout.campus_list_item, parent, false);
+                }
+
+                ((TextView) view.findViewById(R.id.textName)).setText(campus.name);
+                ((TextView) view.findViewById(R.id.textDist)).setText(campus.distance + "km");
+                return view;
+            }
+        };
+        list.setAdapter(adapter);
+
+        /*for (Campus campus : campuses.subList(0, 3)) {
             View item = inflater.inflate(R.layout.campus_list_item, parent, false);
             ((TextView) item.findViewById(R.id.textName)).setText(campus.name);
             ((TextView) item.findViewById(R.id.textDist)).setText(campus.distance + "km");
             parent.addView(item);
-        }
+        }*/
     }
 
 }
