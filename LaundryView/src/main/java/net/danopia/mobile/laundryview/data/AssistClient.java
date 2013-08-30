@@ -22,17 +22,19 @@ import java.util.List;
  */
 public class AssistClient {
     private static final String BASE_URL = "http://mobile.danopia.net/laundryview/";
+    private static final Gson gson = new Gson();
 
     public static List<Campus> getCampuses(Location loc) {
-        String json = getPage("geo?lat=" + loc.getLatitude() + "&long=" + loc.getLongitude());
-        Gson gson = new Gson();
+        String chaser = (loc == null) ? "loc=null" : "lat=" + loc.getLatitude() + "&long=" + loc.getLongitude();
+        String json = getPage("geo?" + chaser);
 
         Type listType = new TypeToken<ArrayList<Campus>>() {}.getType();
         return gson.fromJson(json, listType);
     }
 
     public static void submitPath(String path, Location loc) {
-        getPage("path/" + path + "?lat=" + loc.getLatitude() + "&long=" + loc.getLongitude());
+        String chaser = (loc == null) ? "loc=null" : "lat=" + loc.getLatitude() + "&long=" + loc.getLongitude();
+        getPage("report?path=" + path + "&" + chaser);
     }
 
     private static String getPage(String path) {

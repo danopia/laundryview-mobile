@@ -55,6 +55,7 @@ public class FindCampusActivity extends Activity {
                 final String entry = pathText.getText().toString();
 
                 if (entry.length() == 0) {
+                    pathText.setError("Please enter a link which you were given");
                     String text = "Please enter a link which you were given";
                     Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
                     pathText.requestFocus();
@@ -102,18 +103,23 @@ public class FindCampusActivity extends Activity {
             }
         });
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final List<Campus> campuses = AssistClient.getCampuses(loc);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateCampuses(campuses);
-                    }
-                });
-            }
-        }).start();
+        if (location == null) {
+            findViewById(R.id.spinner).setVisibility(View.GONE);
+            findViewById(R.id.textNoLoc).setVisibility(View.VISIBLE);
+        } else {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final List<Campus> campuses = AssistClient.getCampuses(loc);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateCampuses(campuses);
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 
     void updateCampuses(List<Campus> campuses) {
