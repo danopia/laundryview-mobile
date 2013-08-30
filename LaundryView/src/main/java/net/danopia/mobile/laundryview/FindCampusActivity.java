@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.KeyEvent;
@@ -171,7 +172,10 @@ public class FindCampusActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         final Campus campus = nearCampuses.get(position - 1);
 
-        getListView().setEnabled(false);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://laundryview.com/" + campus.path), this, LaunchActivity.class);
+        startActivity(intent);
+
+        /*getListView().setEnabled(false);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -189,6 +193,6 @@ public class FindCampusActivity extends ListActivity {
                     }
                 });
             }
-        }).start();
+        }).start();*/
     }
 }
