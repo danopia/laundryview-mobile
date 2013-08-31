@@ -1,5 +1,7 @@
 package net.danopia.mobile.laundryview;
 
+import android.location.Location;
+
 import net.danopia.mobile.laundryview.structs.Provider;
 
 /**
@@ -7,6 +9,7 @@ import net.danopia.mobile.laundryview.structs.Provider;
  */
 class Cache {
     public static Provider provider = null;
+    public static Location location = null;
 
     public static void bust() {
         provider = null;

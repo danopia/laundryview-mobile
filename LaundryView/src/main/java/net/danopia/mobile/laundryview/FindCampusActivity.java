@@ -19,11 +19,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.danopia.mobile.laundryview.data.AssistClient;
-import net.danopia.mobile.laundryview.data.LvClient;
 import net.danopia.mobile.laundryview.structs.Assist.Campus;
+import net.danopia.mobile.laundryview.util.LoadingAdapter;
+import net.danopia.mobile.laundryview.util.MessageAdapter;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +32,6 @@ import java.util.List;
  * Created by daniel on 8/29/13.
  */
 public class FindCampusActivity extends ListActivity {
-    Location location;
     private List<Campus> nearCampuses;
 
     @Override
@@ -41,10 +40,11 @@ public class FindCampusActivity extends ListActivity {
 
         final LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         final Location loc = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        location = loc;
+        Cache.location = loc;
 
         getListView().addHeaderView(View.inflate(this, R.layout.activity_find_campus_top, null));
         getListView().addFooterView(View.inflate(this, R.layout.activity_find_campus_bottom, null));
+        getListView().setFooterDividersEnabled(false);
 
         ((ImageButton) findViewById(R.id.wifiButton)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,37 +61,17 @@ public class FindCampusActivity extends ListActivity {
                 final String entry = pathText.getText().toString();
 
                 if (entry.length() == 0) {
-                    pathText.setError("Please enter a link which you were given");
-                    String text = "Please enter a link which you were given";
-                    Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                    pathText.setError("Please enter the link which you were given");
                     pathText.requestFocus();
-                } else if (entry.replaceAll("[a-zA-Z]", "").length() > 0) {
-                    String text = "That link doesn't look right. It should be all letters, like 'upenn'";
-                    Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                } else if (entry.replaceAll("[a-zA-Z0-9\\-]", "").length() > 0) {
+                    pathText.setError("That link doesn't look right. It should be all letters/numbers, like 'upenn'");
                     pathText.requestFocus();
                 } else {
-                    pathButton.setClickable(false);
+                    pathText.setError(null);
 
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Cache.bust();
-                            LvClient.resetCookies();
-                            LvClient.getPage(entry.toLowerCase());
-                            AssistClient.submitPath(entry, loc);
-
-                            // check if worked
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    pathButton.setClickable(true);
-
-                                    startActivity(new Intent(FindCampusActivity.this, RoomListActivity.class));
-                                }
-                            });
-                        }
-                    }).start();
+                    Uri uri = Uri.parse("http://laundryview.com/" + entry);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri, FindCampusActivity.this, LaunchActivity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -102,23 +82,24 @@ public class FindCampusActivity extends ListActivity {
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     pathButton.performClick();
-
                     return true;
                 }
-
                 return false;
             }
         });
 
-        setListAdapter(new ArrayAdapter<String>(this, 0));
-        if (location == null) {
-            findViewById(R.id.spinner).setVisibility(View.GONE);
-            //findViewById(R.id.campusList).setVisibility(View.GONE);
-            findViewById(R.id.textNoLoc).setVisibility(View.VISIBLE);
+        if (Cache.location == null) {
+            setListAdapter(new MessageAdapter(this, "Can't find your current location"));
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AssistClient.getCampuses(loc); // ping
+                }
+            }).start();
+
         } else {
-            findViewById(R.id.spinner).setVisibility(View.VISIBLE);
-            //findViewById(R.id.campusList).setVisibility(View.GONE);
-            findViewById(R.id.textNoLoc).setVisibility(View.GONE);
+            setListAdapter(new LoadingAdapter(this));
 
             new Thread(new Runnable() {
                 @Override
@@ -141,16 +122,12 @@ public class FindCampusActivity extends ListActivity {
             campus.location.setLatitude(campus.coords[0]);
             campus.location.setLongitude(campus.coords[1]);
 
-            campus.distance = (int) (location.distanceTo(campus.location) / 1000);
+            campus.distance = (int) (Cache.location.distanceTo(campus.location) / 1000);
         }
         Collections.sort(campuses);
 
-        findViewById(R.id.spinner).setVisibility(View.GONE);
-        ListView list = getListView(); // (ListView) findViewById(R.id.campusList);
-        //list.setVisibility(View.VISIBLE);
-
         nearCampuses = campuses.subList(0, 5);
-        list.setAdapter(new ArrayAdapter<Campus>(this, 0, nearCampuses) {
+        getListView().setAdapter(new ArrayAdapter<Campus>(this, 0, nearCampuses) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = convertView;
@@ -172,27 +149,28 @@ public class FindCampusActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         final Campus campus = nearCampuses.get(position - 1);
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://laundryview.com/" + campus.path), this, LaunchActivity.class);
+        Uri uri = Uri.parse("http://laundryview.com/" + campus.path);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri, this, LaunchActivity.class);
         startActivity(intent);
+    }
 
-        /*getListView().setEnabled(false);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Cache.bust();
-                LvClient.resetCookies();
-                LvClient.getPage(campus.path);
-                AssistClient.submitPath(campus.path, location);
+    static private class CampusAdapter extends ArrayAdapter<Campus> {
+        public CampusAdapter(Context context, List<Campus> objects) {
+            super(context, 0, objects);
+        }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getListView().setEnabled(true);
-
-                        startActivity(new Intent(FindCampusActivity.this, RoomListActivity.class));
-                    }
-                });
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            Campus campus = getItem(position);
+            if (view == null) {
+                LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = vi.inflate(R.layout.campus_list_item, parent, false);
             }
-        }).start();*/
+
+            ((TextView) view.findViewById(R.id.textName)).setText(campus.name);
+            ((TextView) view.findViewById(R.id.textDist)).setText(campus.distance + "km");
+            return view;
+        }
     }
 }
