@@ -30,24 +30,25 @@ public class LaunchActivity extends Activity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    String fullPath = data.getPath();
+                    if (fullPath == null) return;
+                    final String path = fullPath.replace("/", "");
+
                     Cache.bust();
                     LvClient.resetCookies();
-                    LvClient.getPage(data.getPath());
-                    AssistClient.submitPath(data.getPath(), Cache.location);
+                    LvClient.getPage(path);
+                    AssistClient.submitPath(path, Cache.location);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             Intent intent = new Intent(LaunchActivity.this, RoomListActivity.class);
-                            intent.putExtra("path", data.getPath());
+                            intent.putExtra("path", path);
                             startActivity(intent);
                         }
                     });
                 }
             }).start();
-
-            // TODO: Auth as link, see what it offers
-            System.out.println(data.getPath());
         }
     }
 }
