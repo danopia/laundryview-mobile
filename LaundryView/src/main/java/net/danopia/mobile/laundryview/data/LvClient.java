@@ -4,6 +4,7 @@ import android.os.Build;
 
 import net.danopia.mobile.laundryview.structs.Location;
 import net.danopia.mobile.laundryview.structs.Machine;
+import net.danopia.mobile.laundryview.structs.Page;
 import net.danopia.mobile.laundryview.structs.Provider;
 import net.danopia.mobile.laundryview.structs.Room;
 import net.danopia.mobile.laundryview.util.Helpers;
@@ -47,14 +48,29 @@ public class LvClient {
         CookieHandler.setDefault(cookieManager);
     }
 
-    public static String getPage(String path) {
+    public static Page getPage(String path) {
         BufferedReader in;
         StringBuilder sb = new StringBuilder();
         HttpURLConnection urlConnection = null;
+        Page page = new Page();
 
         try {
             URL url = new URL(BASE_URL + path);
             urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setInstanceFollowRedirects(false);
+
+            if (urlConnection.getResponseCode() == 302) {
+                page.location = urlConnection.getHeaderField("Location");
+                urlConnection.disconnect();
+
+                if (!page.location.substring(0, 4).equals("http")) {
+                    page.location = BASE_URL + page.location;
+                }
+
+                url = new URL(page.location);
+                urlConnection = (HttpURLConnection) url.openConnection();
+            }
+            page.code = urlConnection.getResponseCode();
 
             in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String l;
@@ -73,18 +89,19 @@ public class LvClient {
                 urlConnection.disconnect();
         }
 
-        return sb.toString();
+        page.body = sb.toString();
+        return page;
     }
 
     protected static Map<String, String> getDataFile(String path) {
-        String raw = getPage(path);
-        if (raw == null) return null;
+        Page page = getPage(path);
+        if (page.body == null) return null;
 
         Map<String, String> data = new HashMap<String, String>();
-        if (raw.length() == 0) return data;
+        if (page.body.length() == 0) return data;
 
         // UGLY HACK. THANKS MACGREY.
-        raw = raw.replaceAll("&deg;", "°").replaceAll("&amp;", "&");
+        String raw = page.body.replaceAll("&deg;", "°").replaceAll("&amp;", "&");
         String[] parts = raw.substring(1).split("&");
 
         for (String part : parts) {
@@ -104,10 +121,10 @@ public class LvClient {
     public static Provider getLocations() {
         Matcher m;
 
-        String raw = getPage("lvs.php");
-        if (raw == null) return null; // probably no network
+        Page page = getPage("lvs.php");
+        if (page.body == null) return null; // probably no network
 
-        String chunk = raw.substring(raw.indexOf("<div class=\"home-schoolinfo\">"));
+        String chunk = page.body.substring(page.body.indexOf("<div class=\"home-schoolinfo\">"));
         chunk = chunk.substring(0, chunk.indexOf("class=\"bg-blue4\""));
 
         String[] chunks = chunk.split("</div></div>");
@@ -133,13 +150,13 @@ public class LvClient {
         int gals = 0;
         String reportLink = null;
 
-        m = p3.matcher(raw);
+        m = p3.matcher(page.body);
         if (m.find()) {
             gals = Integer.parseInt(m.group(1).replaceAll(",", ""));
             name = Helpers.titleCase(m.group(2));
         }
 
-        m = p4.matcher(raw);
+        m = p4.matcher(page.body);
         if (m.find()) {
             reportLink = m.group(1);
             name = Helpers.titleCase(m.group(2));
