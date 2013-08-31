@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Shows a headerized location list.
+ *
  * Created by danopia on 5/16/13.
  */
 public class LocationArrayAdapter extends ArrayAdapter<LocationArrayAdapter.Union> {
@@ -48,6 +50,7 @@ public class LocationArrayAdapter extends ArrayAdapter<LocationArrayAdapter.Unio
             }
         //}
 
+        if (row == null) return null;
         Union union = getItem(position);
 
         if (isEnabled(position)) {

@@ -39,16 +39,16 @@
             android:layout_gravity="center" />
 
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:id="@+id/pathText"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:hint="winthrop"
             android:imeOptions="actionGo|flagNoExtractUi"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:capitalize="none" />
+            android:capitalize="none"
+            android:inputType="textUri" />
 
         <Button
             style="?android:attr/buttonStyleSmall"

@@ -1,6 +1,7 @@
 package net.danopia.mobile.laundryview;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -80,7 +81,10 @@ public class RoomDetailFragment extends Fragment {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void doTheThing(String title) {
-        getActivity().getActionBar().setSubtitle(title);
+        ActionBar abar = getActivity().getActionBar();
+        if (abar != null) {
+            abar.setSubtitle(title);
+        }
     }
 
     private View rootView=null;
@@ -163,6 +167,7 @@ public class RoomDetailFragment extends Fragment {
     public View getMachineView(Machine machine, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) this.getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.machine_list_item, parent, false);
+        if (row == null) return null;
 
         TextView machineNum = (TextView) row.findViewById(R.id.machine_number);
         TextView machineStatus = (TextView) row.findViewById(R.id.machine_status);

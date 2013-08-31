@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Client for the assistance server
+ *
  * Created by daniel on 8/29/13.
  */
 public class AssistClient {

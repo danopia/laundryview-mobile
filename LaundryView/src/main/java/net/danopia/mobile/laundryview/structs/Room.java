@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Caches room info.
+ * 
  * Created by danopia on 5/17/13.
  */
 public class Room {

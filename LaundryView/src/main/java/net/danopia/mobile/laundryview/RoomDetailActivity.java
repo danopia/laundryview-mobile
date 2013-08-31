@@ -1,6 +1,7 @@
 package net.danopia.mobile.laundryview;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +25,10 @@ public class RoomDetailActivity extends FragmentActivity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void doTheThing() {
         // Show the Up button in the action bar.
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar abar = getActionBar();
+        if (abar != null) {
+            abar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override

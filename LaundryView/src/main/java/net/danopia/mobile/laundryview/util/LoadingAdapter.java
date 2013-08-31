@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import net.danopia.mobile.laundryview.R;
 
 /**
+ * Adapter to show a loading spinner.
+ *
  * Created by daniel on 8/30/13.
  */
 public class LoadingAdapter extends ArrayAdapter<String> {

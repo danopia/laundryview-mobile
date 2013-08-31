@@ -1,6 +1,8 @@
 package net.danopia.mobile.laundryview.structs;
 
 /**
+ * Caches machine info.
+ *
  * Created by danopia on 5/17/13.
  */
 public class Machine {

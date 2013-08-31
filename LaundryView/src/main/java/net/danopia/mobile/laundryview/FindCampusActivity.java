@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Allows the user to select a campus.
+ *
  * Created by daniel on 8/29/13.
  */
 public class FindCampusActivity extends ListActivity {
@@ -46,7 +49,8 @@ public class FindCampusActivity extends ListActivity {
         getListView().addFooterView(View.inflate(this, R.layout.activity_find_campus_bottom, null));
         getListView().setFooterDividersEnabled(false);
 
-        ((ImageButton) findViewById(R.id.wifiButton)).setOnClickListener(new View.OnClickListener() {
+        ImageButton wifiButton = (ImageButton) findViewById(R.id.wifiButton);
+        wifiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
@@ -58,7 +62,9 @@ public class FindCampusActivity extends ListActivity {
         pathButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String entry = pathText.getText().toString();
+                Editable text = pathText.getText();
+                if (text == null) return;
+                final String entry = text.toString();
 
                 if (entry.length() == 0) {
                     pathText.setError("Please enter the link which you were given");
@@ -126,22 +132,7 @@ public class FindCampusActivity extends ListActivity {
         Collections.sort(campuses);
 
         nearCampuses = campuses.subList(0, 5);
-        getListView().setAdapter(new ArrayAdapter<Campus>(this, 0, nearCampuses) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = convertView;
-                Campus campus = getItem(position);
-
-                if (view == null) {
-                    LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    view = vi.inflate(R.layout.campus_list_item, parent, false);
-                }
-
-                ((TextView) view.findViewById(R.id.textName)).setText(campus.name);
-                ((TextView) view.findViewById(R.id.textDist)).setText(campus.distance + "km");
-                return view;
-            }
-        });
+        getListView().setAdapter(new CampusAdapter(this, nearCampuses));
     }
 
     @Override
@@ -167,6 +158,7 @@ public class FindCampusActivity extends ListActivity {
                 view = vi.inflate(R.layout.campus_list_item, parent, false);
             }
 
+            if (view == null) return null;
             ((TextView) view.findViewById(R.id.textName)).setText(campus.name);
             ((TextView) view.findViewById(R.id.textDist)).setText(campus.distance + "km");
             return view;

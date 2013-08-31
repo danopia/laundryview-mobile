@@ -10,6 +10,7 @@ import android.widget.TextView;
 import net.danopia.mobile.laundryview.R;
 
 /**
+ * Adapter to show a static message.
  * Created by daniel on 8/30/13.
  */
 public class MessageAdapter extends ArrayAdapter<String> {
@@ -26,6 +27,7 @@ public class MessageAdapter extends ArrayAdapter<String> {
             view = vi.inflate(R.layout.item_message, parent, false);
         }
 
+        if (view == null) return null;
         TextView tv = (TextView) view.findViewById(R.id.textView);
         tv.setText(message);
 

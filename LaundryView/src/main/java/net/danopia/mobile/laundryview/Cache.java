@@ -5,6 +5,8 @@ import android.location.Location;
 import net.danopia.mobile.laundryview.structs.Provider;
 
 /**
+ * Stores stuff.
+ *
  * Created by danopia on 5/17/13.
  */
 class Cache {
