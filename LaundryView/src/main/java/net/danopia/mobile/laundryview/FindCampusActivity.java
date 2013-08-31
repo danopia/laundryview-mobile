@@ -76,11 +76,10 @@ public class FindCampusActivity extends ListActivity {
             }
         });
 
-        pathText.setImeActionLabel("Go", EditorInfo.IME_ACTION_DONE);
         pathText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_GO) {
                     pathButton.performClick();
                     return true;
                 }

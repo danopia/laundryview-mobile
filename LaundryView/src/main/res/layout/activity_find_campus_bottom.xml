@@ -45,6 +45,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:hint="winthrop"
+            android:imeOptions="actionGo|flagNoExtractUi"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:capitalize="none" />
